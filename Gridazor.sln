@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gridazor", "Gridazor\Gridazor.csproj", "{C202DD9F-A1D0-4F97-A3EB-969D504BE7C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{92F85864-E26E-447A-9D5C-3EB84D2BF09A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C202DD9F-A1D0-4F97-A3EB-969D504BE7C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C202DD9F-A1D0-4F97-A3EB-969D504BE7C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C202DD9F-A1D0-4F97-A3EB-969D504BE7C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C202DD9F-A1D0-4F97-A3EB-969D504BE7C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92F85864-E26E-447A-9D5C-3EB84D2BF09A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92F85864-E26E-447A-9D5C-3EB84D2BF09A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92F85864-E26E-447A-9D5C-3EB84D2BF09A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92F85864-E26E-447A-9D5C-3EB84D2BF09A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {486AFF30-9449-4DC3-927E-314BCE92471A}
+	EndGlobalSection
+EndGlobal

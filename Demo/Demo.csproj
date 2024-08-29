@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\js\CustomDropdown\CustomDropdown.css" />
+    <Content Remove="wwwroot\js\CustomDropdown\CustomDropdown.js" />
+    <Content Remove="wwwroot\js\Gridazor.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\CustomDropdown\CustomDropdown.css" />
+    <None Include="wwwroot\js\CustomDropdown\CustomDropdown.js" />
+    <None Include="wwwroot\js\Gridazor.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Gridazor\Gridazor.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,28 @@
+﻿@model IndexVM
+@using Gridazor;
+
+<div class="card card-primary">
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post))
+    {
+        <div class="card-body">
+            @Html.GridEditorFor(x => x.Tests, "myGrid", "ag-theme-quartz")
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    }
+</div>
+
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+    <script>
+        $("#myGrid").gridazor({
+            propertyName: '@nameof(Model.Tests)',
+            enableRtl: false,
+            overrideColumnDefs: [],
+            enableDelete: true,
+            deleteButtonId: "delete-button"
+        });
+    </script>
+}
