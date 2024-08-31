@@ -8,13 +8,25 @@ namespace Gridazor.Core;
 
 internal sealed class DefaultColumnProvider : IColumnsProvider
 {
+    private DefaultColumnProvider() { }
+
+    private static readonly Lazy<DefaultColumnProvider> _lazy =
+        new(() => new DefaultColumnProvider());
+    public static DefaultColumnProvider Instance 
+    { 
+        get 
+        { 
+            return _lazy.Value; 
+        } 
+    }
+
     public IEnumerable<Column> Get(Type type)
     {
         var properties = type.GetProperties();
 
         foreach (var property in properties) 
         {
-            var column = new Column(type);
+            var column = new Column(property.PropertyType, property.Name);
             var customAttributes = property.GetCustomAttributes(true);
 
             foreach (var attribute in customAttributes)

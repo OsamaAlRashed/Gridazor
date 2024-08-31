@@ -1,6 +1,6 @@
 ﻿using Gridazor.Attributes;
 
-namespace Demo.Models
+namespace Gridazor.Demo.Models
 {
     public class Test
     {
@@ -9,7 +9,7 @@ namespace Demo.Models
         [Editable(false)]
         [Hide]
         [Required(false)]
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Field("name")]
         [HeaderName("Name")]
@@ -22,5 +22,7 @@ namespace Demo.Models
         [Editable(true)]
         [CellEditor("agLargeTextCellEditor")]
         public string? Description { get; set; }
+
+        public int CatId { get; set; }
     }
 }

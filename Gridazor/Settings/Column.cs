@@ -14,13 +14,13 @@ public class Column
     public bool Hide { get; private set; }
     public bool Selectable { get; private set; }
 
-    internal Column(Type type)
+    internal Column(Type type, string name)
     {
         CellDataType = Helper.GetDefaultCellDataType(type);
         CellEditor = Helper.GetDefaultCellEditor(type);
         Editable = true;
-        Field = type.Name;
-        HeaderName = type.Name;
+        Field = name.FirstToLower();
+        HeaderName = name;
         Required = !Helper.IsNullableType(type);
         Hide = false;
         Selectable = false;

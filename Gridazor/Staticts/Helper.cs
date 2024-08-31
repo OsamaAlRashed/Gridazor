@@ -32,4 +32,12 @@ internal static class Helper
     internal static bool IsNullableType(Type type) 
         => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 
+    internal static string FirstToLower(this string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text;
+
+        return char.ToLower(text[0]) + text.Substring(1);
+    }
+
 }

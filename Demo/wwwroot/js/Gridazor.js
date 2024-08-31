@@ -11,14 +11,27 @@
             deleteButtonId: ""
         }, options);
 
+        // check
+        if (!settings.propertyName) {
+            throw new Error("'propertyName' is required.");
+        }
 
+        if (settings.enableDelete && !settings.deleteButtonId) {
+            throw new Error("'deleteButtonId' is required since the delete button is enabled.");
+        }
+
+        // update columnDefs
         var columnDefs = JSON.parse($(`#columnDefs-${settings.propertyName}`).html());
-        columnDefs = updateSelectProperties();
+        columnDefs = updateSelectionProperties();
         var notRequiredColumns = columnDefs.filter(x => !x.required)
             .map(x => x.field);
 
+        columnDefs = overrideColumns(columnDefs, settings.overrideColumnDefs);
+
+        // grid options
         const gridOptions = {
             data: null,
+            pagination: true,
             enableRtl: settings.enableRtl,
             columnDefs: columnDefs,
             domLayout: 'autoHeight',
@@ -37,12 +50,13 @@
             },
             onCellEditingStopped: (params) => {
                 if (isPinnedRowDataCompleted(params, notRequiredColumns)) {
-                    var newRow = inputRow;
+                    var newRow = { ...inputRow };
                     gridApi.applyTransaction({ add: [newRow] });
+
                     inputRow = {};
 
                     const pinnedTopRow = gridApi.getPinnedTopRow(0);
-                    pinnedTopRow.setData({});
+                    pinnedTopRow.setData(inputRow);
 
                     const event = new CustomEvent('rowsChanged', { detail: getAllRows() });
                     document.dispatchEvent(event);
@@ -56,6 +70,15 @@
             }
         };
 
+        // init the grid
+        const gridDiv = this[0];
+        let gridApi = agGrid.createGrid(gridDiv, gridOptions);
+
+        var jsonData = JSON.parse($(`#jsonData-${settings.propertyName}`).html());
+        setRowData(jsonData)
+
+
+        // functions
         function isEmptyPinnedCell({ node, value }) {
             return (
                 (node.rowPinned === 'top' && value == null) ||
@@ -68,7 +91,7 @@
             gridApi.applyTransaction({ add: data });
         }
 
-        function updateSelectProperties() {
+        function updateSelectionProperties() {
             var newProperties = {
                 headerCheckboxSelection: true,
                 checkboxSelection: true,
@@ -89,16 +112,13 @@
         }
 
         function isPinnedRowDataCompleted(params, notRequiredColumns) {
-            if (params.rowPinned !== 'top') return;
-            console.log(inputRow)
-            return columnDefs.filter((def) => !notRequiredColumns.includes(def.field)).every((def) => inputRow[def.field]);
-        }
+            if (params.rowPinned !== 'top')
+                return;
 
-        function guidGenerator() {
-            var S4 = function () {
-                return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-            };
-            return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+            return columnDefs
+                .filter(
+                    (def) => !notRequiredColumns.includes(def.field))
+                .every((def) => inputRow[def.field]);
         }
 
         function updateCell(e) {
@@ -108,33 +128,27 @@
             }
         }
 
-        const gridDiv = this[0];
-        let gridApi = agGrid.createGrid(gridDiv, gridOptions);
-
-        var jsonData = JSON.parse($(`#jsonData-${settings.propertyName}`).html());
-        setRowData(jsonData)
-
-        if (settings.enableDelete) {
-            document.getElementById(settings.deleteButtonId).addEventListener('click', function () {
-                var selectItems = gridApi.getSelectedRows();
-
-                if (selectItems.length === 0) {
-                    return;
-                }
-
-                gridApi.applyTransaction({ remove: selectItems });
-
-                const event = new CustomEvent('rowsChanged', { detail: getAllRows() });
-                document.dispatchEvent(event);
-            })
-        }
-
         function getAllRows() {
             let rowData = [];
             gridApi.forEachNode(node => rowData.push(node.data));
             return rowData;
         }
 
+        function overrideColumns(columnDefs, overrideColumnDefs) {
+            const columnMap = new Map();
+            columnDefs.forEach(col => columnMap.set(col.field, col));
+
+            overrideColumnDefs.forEach(overrideCol => {
+                if (columnMap.has(overrideCol.field)) {
+                    columnMap.set(overrideCol.field, overrideCol);
+                }
+            });
+
+            return Array.from(columnMap.values());
+        }
+
+
+        // Event listeners
         document.addEventListener('rowsChanged', (e) => {
             const newData = e.detail;
             const container = $(`#data-${settings.propertyName}`);
@@ -159,6 +173,21 @@
                 }
             });
         });
+
+        if (settings.enableDelete) {
+            document.getElementById(settings.deleteButtonId).addEventListener('click', function () {
+                var selectItems = gridApi.getSelectedRows();
+
+                if (selectItems.length === 0) {
+                    return;
+                }
+
+                gridApi.applyTransaction({ remove: selectItems });
+
+                const event = new CustomEvent('rowsChanged', { detail: getAllRows() });
+                document.dispatchEvent(event);
+            })
+        }
 
         return this;
     };

@@ -1,7 +1,7 @@
-﻿namespace Demo.Models
+﻿namespace Gridazor.Demo.Models
 {
     public class IndexVM
     {
-        public List<Test> Tests { get; set; }
+        public List<Test> Tests { get; set; } = [];
     }
 }

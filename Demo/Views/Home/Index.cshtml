@@ -4,6 +4,9 @@
 <div class="card card-primary">
     @using (Html.BeginForm("Index", "Home", FormMethod.Post))
     {
+        <div class="card-header">
+            <button id="delete-button" type="button" class="btn btn-danger">Delete</button>
+        </div>
         <div class="card-body">
             @Html.GridEditorFor(x => x.Tests, "myGrid", "ag-theme-quartz")
         </div>
@@ -17,10 +20,28 @@
 @section Scripts{
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
     <script>
+        const dropdownValues = @Html.Raw(Json.Serialize(ViewBag.Cats));
+        console.log(dropdownValues)
         $("#myGrid").gridazor({
             propertyName: '@nameof(Model.Tests)',
             enableRtl: false,
-            overrideColumnDefs: [],
+            overrideColumnDefs: [{
+                field: "catId",
+                headerName: "Cat Id",
+                cellEditor: CustomDropdownEditor,
+                cellEditorParams: {
+                    values: dropdownValues.map(item => ({
+                        value: item.id,
+                        text: item.name
+                    }))
+                },
+                valueFormatter: function (params) {
+                    console.log(params)
+                    const option = params.colDef.cellEditorParams.values.find(opt => opt.value === params.value);
+                    console.log(option)
+                    return option ? option.text : params.value;
+                }
+            }],
             enableDelete: true,
             deleteButtonId: "delete-button"
         });

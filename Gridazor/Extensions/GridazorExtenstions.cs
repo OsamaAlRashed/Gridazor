@@ -25,6 +25,17 @@ namespace Gridazor
             string id, string className)
             where TResult : class
         {
+            return GridEditorFor(htmlHelper, expression, id, className, null);
+        }
+
+        public static IHtmlContent GridEditorFor<TModel, TResult>(
+            this IHtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TResult>> expression,
+            string id, 
+            string className,
+            IColumnsProvider? customColumnsProvider)
+            where TResult : class
+        {
             if (expression.Body is not MemberExpression memberExpression)
             {
                 throw new ArgumentException(nameof(expression.Body));
@@ -51,24 +62,18 @@ namespace Gridazor
                 return HtmlString.Empty;
             }
 
-            var columnsProvider = new DefaultColumnProvider();
+            var columnsProvider = customColumnsProvider ?? DefaultColumnProvider.Instance;
             var columns = columnsProvider.Get(columnType);
 
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("<div class=\"card\">");
-            
-            stringBuilder.AppendLine("<div class=\"card-header\">");
-            stringBuilder.AppendLine("<button id=\"delete-button\" type=\"button\" class=\"btn btn-danger\">Delete</button>");
-            stringBuilder.AppendLine("</div>");
 
-
-            stringBuilder.AppendLine("<div class=\"card-body\">");
+            stringBuilder.AppendLine($"<div id=\"gridazor-{propertyName}\">");
 
             AppendHiddenColumns(stringBuilder, $"columnDefs-{propertyName}", columns);
             AppendHiddenJsonData(stringBuilder, $"jsonData-{propertyName}", data);
             AppendHiddenDataRows(stringBuilder, propertyName, columnType, data);
 
-            stringBuilder.AppendLine($"<div id=\"{id}\" class=\"{className}\"></div></div>");
+            stringBuilder.AppendLine($"<div id=\"{id}\" class=\"{className}\"></div>");
             stringBuilder.AppendLine("</div>");
             return new HtmlString(stringBuilder.ToString());
         }
