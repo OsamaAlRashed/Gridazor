@@ -6,7 +6,7 @@ using System.Text;
 namespace Gridazor.Core;
 
 
-internal class HtmlGenerator : IHtmlGenerator
+internal sealed class HtmlGenerator : IHtmlGenerator
 {
     private HtmlGenerator() { }
 
@@ -26,7 +26,7 @@ internal class HtmlGenerator : IHtmlGenerator
         return new HtmlString(tagBuilder.ToString());
     }
 
-    private void BuildHtmlElement(StringBuilder tagBuilder, HtmlParams htmlParams)
+    private static void BuildHtmlElement(StringBuilder tagBuilder, HtmlParams htmlParams)
     {
         tagBuilder.AppendFormat("<{0}", htmlParams.Tag);
 

@@ -50,7 +50,7 @@ public class Column
         Editable = true;
         Field = name.FirstToLower();
         HeaderName = name;
-        Required = !Helper.IsNullableType(type);
+        Required = type.IsValueType && !Helper.IsNullableType(type);
         Hide = false;
         Selectable = false;
     }

@@ -8,7 +8,6 @@ namespace Gridazor.Demo.Models
         [HeaderName("Id")]
         [Editable(false)]
         [Hide]
-        [Required(false)]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Field("name")]

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 
 namespace Gridazor.Staticts;
 
@@ -30,17 +29,15 @@ internal static class Helper
         return string.Empty;
     }
 
-    internal static bool IsNullable(PropertyInfo property)
-    {
-        return 
-    }
+    internal static bool IsNullableType(Type type) 
+        => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 
     internal static string FirstToLower(this string text)
     {
         if (string.IsNullOrEmpty(text))
             return text;
 
-        return char.ToLower(text[0]) + text.Substring(1);
+        return char.ToLower(text[0]) + text[1..];
     }
 
 }
