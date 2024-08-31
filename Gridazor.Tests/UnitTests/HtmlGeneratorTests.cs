@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Gridazor.Abstractions;
 using Gridazor.Core;
-using Microsoft.AspNetCore.Html;
 
 namespace Gridazor.Tests.UnitTests;
 
@@ -16,73 +15,82 @@ public class HtmlGeneratorTests
 
 
     [Fact]
-    public void Generate_ShouldReturnCorrectHtml_ForSingleDivWithClassAndStyle()
+    public void Generate_SingleElement_ReturnsCorrectHtml()
     {
         // Arrange
-        var htmlParams = new HtmlParams("div", "my-class", "color:red;");
+        var htmlParams = new HtmlParams("div", "container", "color: red;", "id=\"main\"");
+
+        var expectedHtml = "<div class=\"container\" style=\"color: red;\" id=\"main\"></div>";
 
         // Act
-        HtmlString result = _htmlGenerator.Generate(htmlParams);
+        var result = _htmlGenerator.Generate(htmlParams);
 
         // Assert
-        result.ToString().Should().Be("<div class=\"my-class\" style=\"color:red;\"></div>");
+        result.ToString().Should().Be(expectedHtml);
     }
 
     [Fact]
-    public void Generate_ShouldReturnCorrectHtml_WithNestedElements()
+    public void Generate_NestedElements_ReturnsCorrectHtml()
     {
-        // Arrange
-        var htmlParamsParent = new HtmlParams("div", "parent-class", "background-color:blue;");
-        var htmlParamsChild = new HtmlParams("span", "child-class", "color:white;");
+        //Arrange
+        var parentParams = new HtmlParams("div", "parent", "padding: 10px;", "id=\"parent\"", null,
+            new HtmlParams("span", "child", "font-weight: bold;", "id=\"child\""));
+
+        var expectedHtml = "<div class=\"parent\" style=\"padding: 10px;\" id=\"parent\">" +
+                           "<span class=\"child\" style=\"font-weight: bold;\" id=\"child\"></span>" +
+                           "</div>";
 
         // Act
-        HtmlString childHtml = _htmlGenerator.Generate(htmlParamsChild, "Child Content");
-        HtmlString parentHtml = _htmlGenerator.Generate(htmlParamsParent, childHtml.ToString());
+        var result = _htmlGenerator.Generate(parentParams);
 
         // Assert
-        parentHtml.ToString().Should().Be("<div class=\"parent-class\" style=\"background-color:blue;\"><span class=\"child-class\" style=\"color:white;\">Child Content</span></div>");
+        result.ToString().Should().Be(expectedHtml);
     }
 
     [Fact]
-    public void Generate_ShouldReturnCorrectHtml_WithNestedElements3Levels()
+    public void Generate_NoAttributes_ReturnsTagOnly()
     {
         // Arrange
-        var htmlParamsL1= new HtmlParams("div", "l1-class", "background-color:blue;");
-        var htmlParamsL2 = new HtmlParams("div", "l2-class", "");
-        var htmlParamsL3 = new HtmlParams("span", "l3-class", "color:white;");
+        var htmlParams = new HtmlParams("br");
+
+        var expectedHtml = "<br></br>";
 
         // Act
-        HtmlString l3Html = _htmlGenerator.Generate(htmlParamsL3, "Child Content");
-        HtmlString l2Html = _htmlGenerator.Generate(htmlParamsL2, l3Html.ToString());
-        HtmlString l1Html = _htmlGenerator.Generate(htmlParamsL1, l2Html.ToString());
+        var result = _htmlGenerator.Generate(htmlParams);
 
         // Assert
-        l1Html.ToString().Should().Be("<div class=\"l1-class\" style=\"background-color:blue;\"><div class=\"l2-class\"><span class=\"l3-class\" style=\"color:white;\">Child Content</span></div></div>");
+        result.ToString().Should().Be(expectedHtml);
     }
 
     [Fact]
-    public void Generate_ShouldReturnCorrectHtml_WhenAttributesAreProvided()
+    public void Generate_DeeplyNestedElements_ReturnsCorrectHtml()
     {
         // Arrange
-        var htmlParams = new HtmlParams("input", "input-class", "", " type=\"text\" value=\"test\"");
+        var expectedHtml =
+            "<div id=\"gridazor\">" +
+                "<div id=\"jsonData\">JsonData</div>" +
+                "<div id=\"columnDefs\">ColumnDefs</div>" +
+                "<div id=\"data\">" +
+                    "<div class=\"row\">" +
+                        "<input type=\"hidden\" name=\"test\" value=\"test\"></input>" +
+                    "</div>" +
+                "</div>" +
+            "</div>";
 
         // Act
-        HtmlString result = _htmlGenerator.Generate(htmlParams);
+        var result = _htmlGenerator.Generate(
+            new HtmlParams("div", null, null, "id=\"gridazor\"", null,
+                new HtmlParams("div", null, null, "id=\"jsonData\"", "JsonData"),
+                new HtmlParams("div", null, null, "id=\"columnDefs\"", "ColumnDefs"),
+                new HtmlParams("div", null, null, "id=\"data\"", null,
+                    new HtmlParams("div", "row", null, null, null,
+                        new HtmlParams("input", null, null, "type=\"hidden\" name=\"test\" value=\"test\"")
+                        )
+                    )
+                )
+        );
 
         // Assert
-        result.ToString().Should().Be("<input class=\"input-class\" type=\"text\" value=\"test\"></input>");
-    }
-
-    [Fact]
-    public void Generate_ShouldHandleEmptyClassStyleAndAttributes()
-    {
-        // Arrange
-        var htmlParams = new HtmlParams("p");
-
-        // Act
-        HtmlString result = _htmlGenerator.Generate(htmlParams, "Text content");
-
-        // Assert
-        result.ToString().Should().Be("<p>Text content</p>");
+        result.ToString().Should().Be(expectedHtml);
     }
 }

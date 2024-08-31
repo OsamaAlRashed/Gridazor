@@ -12,7 +12,7 @@ internal sealed class DefaultColumnProvider : IColumnsProvider
 
     private static readonly Lazy<DefaultColumnProvider> _lazy =
         new(() => new DefaultColumnProvider());
-    public static DefaultColumnProvider Instance 
+    internal static DefaultColumnProvider Instance 
     { 
         get 
         { 

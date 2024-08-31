@@ -9,19 +9,19 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly static List<Test> _tests = [
-                new Test() {
-                    Description = "Description1",
-                    Id = Guid.NewGuid(),
-                    Name = "Name1",
-                    CatId = 2
-                },
-                new Test() {
-                    Description = "Description2",
-                    Id = Guid.NewGuid(),
-                    Name = "Name2",
-                    CatId = 1
-                }
-            ];
+        new Test() {
+            Description = "Description1",
+            Id = Guid.NewGuid(),
+            Name = "Name1",
+            CatId = 2
+        },
+        new Test() {
+            Description = "Description2",
+            Id = Guid.NewGuid(),
+            Name = "Name2",
+            CatId = 1
+        }
+    ];
 
     public HomeController(ILogger<HomeController> logger)
     {

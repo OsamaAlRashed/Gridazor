@@ -19,10 +19,15 @@ internal class HtmlGenerator : IHtmlGenerator
             return _lazy.Value;
         }
     }
-
-    public HtmlString Generate(HtmlParams htmlParams, params string[] innerHtml)
+    public HtmlString Generate(HtmlParams htmlParams)
     {
         var tagBuilder = new StringBuilder();
+        BuildHtmlElement(tagBuilder, htmlParams);
+        return new HtmlString(tagBuilder.ToString());
+    }
+
+    private void BuildHtmlElement(StringBuilder tagBuilder, HtmlParams htmlParams)
+    {
         tagBuilder.AppendFormat("<{0}", htmlParams.Tag);
 
         if (!string.IsNullOrEmpty(htmlParams.Classes))
@@ -37,18 +42,26 @@ internal class HtmlGenerator : IHtmlGenerator
 
         if (!string.IsNullOrEmpty(htmlParams.Attributes))
         {
-            tagBuilder.Append(htmlParams.Attributes);
+            tagBuilder.Append(' ');
+            tagBuilder.Append(htmlParams.Attributes.Trim());
         }
 
         tagBuilder.Append('>');
 
-        foreach (var content in innerHtml)
+        if (!string.IsNullOrEmpty(htmlParams.InnerHtml)) 
         {
-            tagBuilder.Append(content);
+            tagBuilder.Append(htmlParams.InnerHtml);
+        }
+
+        if (htmlParams.Childs != null && htmlParams.Childs.Length > 0)
+        {
+            foreach (var child in htmlParams.Childs)
+            {
+                BuildHtmlElement(tagBuilder, child);
+            }
         }
 
         tagBuilder.AppendFormat("</{0}>", htmlParams.Tag);
-
-        return new HtmlString(tagBuilder.ToString());
     }
+
 }

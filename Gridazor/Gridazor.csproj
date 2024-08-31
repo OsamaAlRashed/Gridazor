@@ -13,4 +13,11 @@
     <InternalsVisibleTo Include="Gridazor.Tests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Scripts\**\*">
+      <Pack>true</Pack>
+      <PackagePath>Scripts</PackagePath>
+    </None>
+  </ItemGroup>
+
 </Project>
