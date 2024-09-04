@@ -23,9 +23,7 @@
         // update columnDefs
         var columnDefs = JSON.parse($(`#columnDefs-${settings.propertyName}`).html());
         columnDefs = updateSelectionProperties();
-        var notRequiredColumns = columnDefs.filter(x => !x.required)
-            .map(x => x.field);
-
+        var requiredColumns = columnDefs.filter(x => x.required).map(x => x.field);
         columnDefs = overrideColumns(columnDefs, settings.overrideColumnDefs);
 
         // grid options
@@ -49,7 +47,7 @@
                         : undefined,
             },
             onCellEditingStopped: (params) => {
-                if (isPinnedRowDataCompleted(params, notRequiredColumns)) {
+                if (isPinnedRowDataCompleted(params, requiredColumns)) {
                     var newRow = { ...inputRow };
                     gridApi.applyTransaction({ add: [newRow] });
 
@@ -111,14 +109,16 @@
             return colDef.headerName + '...';
         }
 
-        function isPinnedRowDataCompleted(params, notRequiredColumns) {
+        function isPinnedRowDataCompleted(params, requiredColumns) {
             if (params.rowPinned !== 'top')
                 return;
 
-            return columnDefs
+            var isCompleted = columnDefs
                 .filter(
-                    (def) => !notRequiredColumns.includes(def.field))
+                    (def) => requiredColumns.includes(def.field))
                 .every((def) => inputRow[def.field]);
+                
+            return isCompleted;
         }
 
         function updateCell(e) {
@@ -162,7 +162,7 @@
                     Object.keys(row).forEach(key => {
                         const value = row[key];
                         rowHtml += `
-                            <input type="hidden" name="${settings.propertyName}[${index}].${key}" value="${value}" />
+                        <input type="hidden" name="${settings.propertyName}[${index}].${key}" value="${value}" />
                         `;
                     });
 
