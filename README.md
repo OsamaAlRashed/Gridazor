@@ -92,9 +92,7 @@ public class Test
                     }))
                 },
                 valueFormatter: function (params) {
-                    console.log(params)
                     const option = params.colDef.cellEditorParams.values.find(opt => opt.value === params.value);
-                    console.log(option)
                     return option ? option.text : params.value;
                 }
             }],
