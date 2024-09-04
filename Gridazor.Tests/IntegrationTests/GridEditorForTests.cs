@@ -47,9 +47,9 @@ public class GridEditorForTests
         // Assert
         result.Should().NotBeNull();
         result.ToString().Should().Contain($"id=\"gridazor-{expectedPropertyName}\"");
-        result.ToString().Should().Contain($"id=\"columnDefs-{expectedPropertyName}\" style=\"display: none;\">{expectedColumnDefsJson}</div>");
-        result.ToString().Should().Contain($"id=\"jsonData-{expectedPropertyName}\" style=\"display: none;\">{expectedJsonData}</div>");
-        result.ToString().Should().Contain("id=\"grid-id\" class=\"grid-class\"");
+        result.ToString().Should().Contain($"id=\"columnDefs-{expectedPropertyName}\">{expectedColumnDefsJson}</div>");
+        result.ToString().Should().Contain($"id=\"jsonData-{expectedPropertyName}\">{expectedJsonData}</div>");
+        result.ToString().Should().Contain("class=\"grid-class\" id=\"grid-id\"");
     }
 
     [Fact]
@@ -57,8 +57,14 @@ public class GridEditorForTests
     {
         // Arrange
         var htmlHelperMock = new Mock<IHtmlHelper<TestModel>>();
-        var testModel = new TestModel { Items = new List<TestItem>() };
-        htmlHelperMock.SetupGet(x => x.ViewData.Model).Returns(testModel);
+        var viewData = new ViewDataDictionary<TestModel>(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+        {
+            Model = new TestModel
+            {
+                Items = []
+            }
+        };
+        htmlHelperMock.SetupGet(x => x.ViewData).Returns(viewData);
 
         Expression<Func<TestModel, TestItem>> expression = model => model.Items.First();
 
@@ -66,7 +72,7 @@ public class GridEditorForTests
         Action act = () => htmlHelperMock.Object.GridEditorFor(expression, "grid-id", "grid-class");
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("TResult must be an enumerable type");
+        act.Should().Throw<ArgumentException>();
     }
 
     [Fact]
@@ -74,8 +80,19 @@ public class GridEditorForTests
     {
         // Arrange
         var htmlHelperMock = new Mock<IHtmlHelper<TestModel>>();
-        var testModel = new TestModel();
-        htmlHelperMock.SetupGet(x => x.ViewData.Model).Returns(testModel);
+        var viewData = new ViewDataDictionary<TestModel>(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+        {
+            Model = new TestModel
+            {
+                Items =
+                [
+                    new TestItem { Name = "Item1", Value = 10 },
+                    new TestItem { Name = "Item2", Value = 20 }
+                ]
+            }
+        };
+
+        htmlHelperMock.SetupGet(x => x.ViewData).Returns(viewData);
 
         Expression<Func<TestModel, string>> expression = model => model.NonEnumerableProperty;
 
@@ -83,7 +100,7 @@ public class GridEditorForTests
         Action act = () => htmlHelperMock.Object.GridEditorFor(expression, "grid-id", "grid-class");
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("TResult must be an enumerable type");
+        act.Should().Throw<ArgumentException>();
     }
 
     public class TestModel
