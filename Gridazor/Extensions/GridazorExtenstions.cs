@@ -3,11 +3,9 @@ using Gridazor.Core;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Text.Json;
 
 namespace Gridazor;
@@ -22,11 +20,10 @@ public static class GridazorExtenstions
     public static IHtmlContent GridEditorFor<TModel, TResult>(
         this IHtmlHelper<TModel> htmlHelper,
         Expression<Func<TModel, TResult>> expression,
-        string id, string className)
-        where TResult : class
-    {
-        return GridEditorFor(htmlHelper, expression, id, className, null);
-    }
+        string id,
+        string className)
+        where TResult : class 
+            => GridEditorFor(htmlHelper, expression, id, className, null);
 
     public static IHtmlContent GridEditorFor<TModel, TResult>(
         this IHtmlHelper<TModel> htmlHelper,
@@ -43,21 +40,20 @@ public static class GridazorExtenstions
 
         if (!IsEnumerableType(typeof(TResult)))
         {
-            throw new ArgumentException("TResult must be an enumerable type");
+            throw new ArgumentException("The property must be an enumerable type");
         }
 
         var propertyName = memberExpression.Member.Name;
-        var columnType = typeof(TResult).GetGenericArguments().FirstOrDefault() ?? throw new ArgumentException("Unable to determine column type from TResult");
-        var selector = expression.Compile();
-        var modelData = selector(htmlHelper.ViewData.Model);
+        var propertyType = typeof(TResult).GetGenericArguments().FirstOrDefault() ?? throw new ArgumentException("Unable to determine property type from TResult");
+        var modelData = expression.Compile()(htmlHelper.ViewData.Model);
 
-        if (htmlHelper.ViewData.Model is null || modelData is not IEnumerable<object> data)
+        if (modelData is not IEnumerable<object> data)
         {
             return HtmlString.Empty;
         }
 
         var columnsProvider = customColumnsProvider ?? DefaultColumnProvider.Instance;
-        var columns = columnsProvider.Get(columnType);
+        var columns = columnsProvider.Get(propertyType);
 
         var htmlGenerator = HtmlGenerator.Instance;
         var htmlString = htmlGenerator.Generate(
@@ -68,12 +64,14 @@ public static class GridazorExtenstions
                     data.Select((row, index) =>
                     {
                         var rowHtml = new HtmlParams("div", "row", null, null, null,
-                            columnType.GetProperties().Select(property =>
+                            propertyType.GetProperties().Select(property =>
                             {
                                 var value = property.GetValue(row);
-                                var input = new HtmlParams("input", null, null, $"type=\"hidden\" name=\"{propertyName}[{index}].{property.Name}\" value=\"{value}\"");
+                                var input = new HtmlParams("input", null, null, $"id=\"{propertyName}_{index}__{property.Name}\" type=\"hidden\" name=\"{propertyName}[{index}].{property.Name}\" value=\"{value}\"");
+                                
                                 return input;
                             }).ToArray());
+                        
                         return rowHtml;
                     }).ToArray()
                 ),
@@ -85,10 +83,9 @@ public static class GridazorExtenstions
     }
 
     private static bool IsEnumerableType(Type type)
-    {
-        return type.GetInterfaces()
-               .Any(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-           || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>));
-    }
+        => (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>)) ||
+            type.GetInterfaces().Any(
+                t => t.IsGenericType
+             && t.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 
 }

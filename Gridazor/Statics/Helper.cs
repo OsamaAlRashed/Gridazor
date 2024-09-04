@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gridazor.Staticts;
+namespace Gridazor.Statics;
 
 internal static class Helper
 {

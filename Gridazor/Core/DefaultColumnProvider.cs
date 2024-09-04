@@ -54,7 +54,7 @@ internal sealed class DefaultColumnProvider : IColumnsProvider
                     case HideAttribute _:
                         column.SetHide(true);
                         break;
-                    case SelectableAttribute _:
+                    case SelectionAttribute _:
                         column.SetSelectable(true);
                         break;
                 }

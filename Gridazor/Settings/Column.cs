@@ -1,4 +1,4 @@
-﻿using Gridazor.Staticts;
+﻿using Gridazor.Statics;
 using System;
 using Gridazor.Abstractions;
 

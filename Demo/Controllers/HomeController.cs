@@ -43,6 +43,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public IActionResult Index(IndexVM indexVM)
     {
         _tests.Clear();

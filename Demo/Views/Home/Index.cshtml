@@ -2,7 +2,10 @@
 @using Gridazor;
 
 <div class="card card-primary">
-    @using (Html.BeginForm("Index", "Home", FormMethod.Post))
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post, new
+    {
+        enctype = "multipart/form-data"
+    }))
     {
         <div class="card-header">
             <button id="delete-button" type="button" class="btn btn-danger">Delete</button>
@@ -36,9 +39,7 @@
                     }))
                 },
                 valueFormatter: function (params) {
-                    console.log(params)
                     const option = params.colDef.cellEditorParams.values.find(opt => opt.value === params.value);
-                    console.log(option)
                     return option ? option.text : params.value;
                 }
             }],

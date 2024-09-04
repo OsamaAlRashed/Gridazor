@@ -15,7 +15,7 @@ public class DefaultColumnProviderTests
         [CellEditor("text")]
         [Required(true)]
         [Hide]
-        [Selectable]
+        [Selection]
         public string TestProperty { get; set; }
 
         public int AnotherProperty { get; set; }

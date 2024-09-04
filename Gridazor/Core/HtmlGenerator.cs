@@ -5,7 +5,6 @@ using System.Text;
 
 namespace Gridazor.Core;
 
-
 internal sealed class HtmlGenerator : IHtmlGenerator
 {
     private HtmlGenerator() { }

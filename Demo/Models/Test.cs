@@ -1,4 +1,5 @@
 ﻿using Gridazor.Attributes;
+using Gridazor.Models;
 
 namespace Gridazor.Demo.Models
 {
@@ -8,12 +9,13 @@ namespace Gridazor.Demo.Models
         [HeaderName("Id")]
         [Editable(false)]
         [Hide]
+        [Required(false)]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Field("name")]
         [HeaderName("Name")]
         [Editable(true)]
-        [Selectable]
+        [Selection]
         public string Name { get; set; } = string.Empty;
 
         [Field("description")]
