@@ -109,7 +109,6 @@ Gridazor allows for extensive customization, including:
 
 - **Column Definitions**: Override default column definitions.
 - **Cell Editors**: Use custom cell editors or pre-built Ag-Grid editors.
-- **Value Formatters**: Format the display of cell values based on custom logic.
 - **RTL Support**: Enable or disable right-to-left text direction.
 - **Row Deletion**: Enable row deletion with a custom delete button.
 
