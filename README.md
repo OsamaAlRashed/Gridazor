@@ -78,7 +78,6 @@ public class Test
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
     <script>
         const dropdownValues = @Html.Raw(Json.Serialize(ViewBag.Cats));
-        console.log(dropdownValues)
         $("#myGrid").gridazor({
             propertyName: '@nameof(Model.Tests)',
             enableRtl: false,
