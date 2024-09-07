@@ -39,7 +39,7 @@ public class Test
     [Required(false)]
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    [Selection]
+    [RowSelection]
     public string Name { get; set; } = string.Empty;
 
     [CellEditor("agLargeTextCellEditor")]
