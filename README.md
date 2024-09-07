@@ -2,7 +2,8 @@
 
 **Gridazor** is a C# library that provides HTML helpers for Razor views/pages in ASP.NET Core applications. It simplifies the process of generating and managing data tables in your web applications by using the powerful [Ag-Grid](https://www.ag-grid.com/) library for the front end. With Gridazor, you can easily bind lists to tables and submit data without needing AJAX.
 
-[Example](https://github.com/user-attachments/assets/3219a231-c4ae-42aa-90d1-06916798004e)
+![Demo](https://github.com/user-attachments/assets/48bceec0-7309-4ee3-89d3-156e7585f845)
+
 
 ## Features
 
@@ -77,7 +78,6 @@ public class Test
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
     <script>
         const dropdownValues = @Html.Raw(Json.Serialize(ViewBag.Cats));
-        console.log(dropdownValues)
         $("#myGrid").gridazor({
             propertyName: '@nameof(Model.Tests)',
             enableRtl: false,
@@ -109,7 +109,6 @@ Gridazor allows for extensive customization, including:
 
 - **Column Definitions**: Override default column definitions.
 - **Cell Editors**: Use custom cell editors or pre-built Ag-Grid editors.
-- **Value Formatters**: Format the display of cell values based on custom logic.
 - **RTL Support**: Enable or disable right-to-left text direction.
 - **Row Deletion**: Enable row deletion with a custom delete button.
 
