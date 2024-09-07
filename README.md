@@ -2,7 +2,7 @@
 
 **Gridazor** is a C# library that provides HTML helpers for Razor views/pages in ASP.NET Core applications. It simplifies the process of generating and managing data tables in your web applications by using the powerful [Ag-Grid](https://www.ag-grid.com/) library for the front end. With Gridazor, you can easily bind lists to tables and submit data without needing AJAX.
 
-![Gridazor Example](path/to/your/gif/image.gif) <!-- Add your GIF image path here -->
+[Example](https://github.com/user-attachments/assets/3219a231-c4ae-42aa-90d1-06916798004e)
 
 ## Features
 
@@ -35,21 +35,13 @@ public class IndexVM
 
 public class Test
 {
-    [Field("id")]
-    [HeaderName("Id")]
-    [Editable(false)]
     [Hide]
+    [Required(false)]
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    [Field("name")]
-    [HeaderName("Name")]
-    [Editable(true)]
-    [Selectable]
+    [Selection]
     public string Name { get; set; } = string.Empty;
 
-    [Field("description")]
-    [HeaderName("Description")]
-    [Editable(true)]
     [CellEditor("agLargeTextCellEditor")]
     public string? Description { get; set; }
 
@@ -100,9 +92,7 @@ public class Test
                     }))
                 },
                 valueFormatter: function (params) {
-                    console.log(params)
                     const option = params.colDef.cellEditorParams.values.find(opt => opt.value === params.value);
-                    console.log(option)
                     return option ? option.text : params.value;
                 }
             }],
