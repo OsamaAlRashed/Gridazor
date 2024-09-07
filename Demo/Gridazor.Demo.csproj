@@ -7,18 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\Scripts\CustomDropdown\CustomDropdown.css" />
-    <Content Remove="wwwroot\Scripts\CustomDropdown\CustomDropdown.js" />
-    <Content Remove="wwwroot\Scripts\Gridazor.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\Scripts\CustomDropdown\CustomDropdown.css" />
-    <None Include="wwwroot\Scripts\CustomDropdown\CustomDropdown.js" />
-    <None Include="wwwroot\Scripts\Gridazor.js" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Gridazor\Gridazor.csproj" />
   </ItemGroup>
 
