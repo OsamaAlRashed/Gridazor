@@ -3,7 +3,7 @@
 namespace Gridazor.Attributes;
 
 /// <summary>
-/// Attribute to specify that the column should be hidden.
+/// Attribute to specify that the column is selectable.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class HideAttribute : Attribute { }
+public class RowSelectionAttribute : Attribute { }

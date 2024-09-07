@@ -13,11 +13,11 @@
     transition: border-color 0.3s ease;
 }
 
-    .custom-select:focus {
-        border-color: #007bff;
-        outline: none;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-    }
+.custom-select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
 
 .custom-dropdown {
     position: absolute;
@@ -40,11 +40,11 @@
     transition: background-color 0.2s ease;
 }
 
-    .custom-dropdown-item:hover {
-        background-color: #f0f0f0;
-    }
+.custom-dropdown-item:hover {
+    background-color: #f0f0f0;
+}
 
-    .custom-dropdown-item.selected {
-        background-color: #007bff;
-        color: white;
-    }
+.custom-dropdown-item.selected {
+    background-color: #007bff;
+    color: white;
+}

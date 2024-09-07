@@ -17,22 +17,48 @@ public static class GridazorExtenstions
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
     };
 
-    public static IHtmlContent GridEditorFor<TModel, TResult>(
-        this IHtmlHelper<TModel> htmlHelper,
-        Expression<Func<TModel, TResult>> expression,
-        string id,
-        string className)
-        where TResult : class 
-            => GridEditorFor(htmlHelper, expression, id, className, null);
+    /// <summary>
+    /// Generates an HTML grid editor for the specified model property.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <typeparam name="TResult">The result type, which must be a class.</typeparam>
+    /// <param name="htmlHelper">The HTML helper instance.</param>
+    /// <param name="expression">The expression representing the model property.</param>
+    /// <param name="gridId">The unique identifier for the grid.</param>
+    /// <param name="agGridTheme">The AG Grid theme to apply.</param>
+    /// <returns>Returns the generated HTML content for the grid editor.</returns>
 
     public static IHtmlContent GridEditorFor<TModel, TResult>(
         this IHtmlHelper<TModel> htmlHelper,
         Expression<Func<TModel, TResult>> expression,
-        string id, 
-        string className,
+        string gridId,
+        string agGridTheme)
+        where TResult : class 
+            => GridEditorFor(htmlHelper, expression, gridId, agGridTheme, null);
+
+    /// <summary>
+    /// Generates an HTML grid editor for the specified model property, with an optional custom column provider.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <typeparam name="TResult">The result type, which must be a class.</typeparam>
+    /// <param name="htmlHelper">The HTML helper instance.</param>
+    /// <param name="expression">The expression representing the model property.</param>
+    /// <param name="gridId">The unique identifier for the grid.</param>
+    /// <param name="agGridTheme">The AG Grid theme to apply.</param>
+    /// <param name="customColumnsProvider">An optional custom column provider.</param>
+    /// <returns>Returns the generated HTML content for the grid editor.</returns>
+    public static IHtmlContent GridEditorFor<TModel, TResult>(
+        this IHtmlHelper<TModel> htmlHelper,
+        Expression<Func<TModel, TResult>> expression,
+        string gridId, 
+        string agGridTheme,
         IColumnsProvider? customColumnsProvider)
         where TResult : class
     {
+        ArgumentNullException.ThrowIfNull(nameof(expression));
+        ArgumentNullException.ThrowIfNull(nameof(htmlHelper));
+        ArgumentNullException.ThrowIfNull(nameof(htmlHelper.ViewData));
+
         if (expression.Body is not MemberExpression memberExpression)
         {
             throw new ArgumentException(nameof(expression.Body));
@@ -40,14 +66,15 @@ public static class GridazorExtenstions
 
         if (!IsEnumerableType(typeof(TResult)))
         {
-            throw new ArgumentException("The property must be an enumerable type");
+            throw new ArgumentException("The property type must be an enumerable type");
         }
+        var propertyType = typeof(TResult).GetGenericArguments().FirstOrDefault() ??
+            throw new ArgumentException("The property type must be generic type.");
 
         var propertyName = memberExpression.Member.Name;
-        var propertyType = typeof(TResult).GetGenericArguments().FirstOrDefault() ?? throw new ArgumentException("Unable to determine property type from TResult");
-        var modelData = expression.Compile()(htmlHelper.ViewData.Model);
+        var propertyData = expression.Compile()(htmlHelper.ViewData.Model);
 
-        if (modelData is not IEnumerable<object> data)
+        if (propertyData is not IEnumerable<object> data)
         {
             return HtmlString.Empty;
         }
@@ -75,7 +102,7 @@ public static class GridazorExtenstions
                         return rowHtml;
                     }).ToArray()
                 ),
-                new HtmlParams("div", className, null, $"id=\"{id}\"")
+                new HtmlParams("div", agGridTheme, null, $"id=\"{gridId}\"")
             )
         );
         

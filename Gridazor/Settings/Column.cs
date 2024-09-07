@@ -5,43 +5,50 @@ using Gridazor.Abstractions;
 namespace Gridazor.Settings;
 
 /// <summary>
-/// Represents the metadeta of the column that got from <see cref="IColumnsProvider"/>
+/// Represents the metadata of a column obtained from <see cref="IColumnsProvider"/>.
 /// </summary>
 public class Column
 {
     /// <summary>
-    /// Gets the header name of the column
-    /// the default value is property name
-    /// see <see cref="https://www.ag-grid.com/javascript-data-grid/column-headers/"/>
+    /// Gets the header name of the column. Defaults to the property name.
     /// </summary>
+    /// <remarks>For more details, see <see href="https://www.ag-grid.com/javascript-data-grid/column-headers/">AG Grid Column Headers</see>.</remarks>
     public string HeaderName { get; private set; }
 
     /// <summary>
-    /// Gets the field name of the column
-    /// field is such the id of the column and it should be unique
-    /// the default value is property name (first letter is in lower case)
+    /// Gets the field name of the column. It serves as the unique identifier for the column, defaulting to the property name with a lowercase first letter.
     /// </summary>
     public string Field { get; private set; }
 
     /// <summary>
-    /// Gets whether if the column is editable
-    /// the default value is true
+    /// Gets a value indicating whether the column is editable. Defaults to true.
     /// </summary>
     public bool Editable { get; private set; }
 
     /// <summary>
-    /// Gets the data type of the column
+    /// Gets the data type for the cell in the column.
     /// </summary>
     public string CellDataType { get; private set; }
 
     /// <summary>
-    /// Gets the editor of the column
+    /// Gets the editor for the cell in the column.
     /// </summary>
     public string CellEditor { get; private set; }
 
+    /// <summary>
+    /// Gets a value indicating whether the column is required.
+    /// </summary>
     public bool Required { get; private set; }
+
+    /// <summary>
+    /// Gets a value indicating whether the column is hidden.
+    /// </summary>
     public bool Hide { get; private set; }
-    public bool Selectable { get; private set; }
+
+    /// <summary>
+    /// Gets a value indicating whether the column is used for row selection.
+    /// </summary>
+    public bool IsRowSelectable { get; private set; }
 
     internal Column(Type type, string name)
     {
@@ -52,7 +59,7 @@ public class Column
         HeaderName = name;
         Required = type.IsValueType && !Helper.IsNullableType(type);
         Hide = false;
-        Selectable = false;
+        IsRowSelectable = false;
     }
 
     internal Column SetHeaderName(string headerName)
@@ -104,9 +111,9 @@ public class Column
         return this;
     }
 
-    internal Column SetSelectable(bool selectable)
+    internal Column SetIsRowSelectable(bool isRowSelectable)
     {
-        Selectable = selectable;
+        IsRowSelectable = isRowSelectable;
 
         return this;
     }

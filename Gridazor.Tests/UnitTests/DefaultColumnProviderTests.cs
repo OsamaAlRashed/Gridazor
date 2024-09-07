@@ -15,7 +15,7 @@ public class DefaultColumnProviderTests
         [CellEditor("text")]
         [Required(true)]
         [Hide]
-        [Selection]
+        [RowSelection]
         public string TestProperty { get; set; }
 
         public int AnotherProperty { get; set; }
@@ -50,7 +50,7 @@ public class DefaultColumnProviderTests
         firstColumn.CellEditor.Should().Be("text");
         firstColumn.Required.Should().BeTrue();
         firstColumn.Hide.Should().BeTrue();
-        firstColumn.Selectable.Should().BeTrue();
+        firstColumn.IsRowSelectable.Should().BeTrue();
 
         var secondColumn = columns.FirstOrDefault(c => c.Field == "anotherProperty");
         secondColumn.Should().NotBeNull();
@@ -61,7 +61,7 @@ public class DefaultColumnProviderTests
         secondColumn.CellEditor.Should().Be("agNumberCellEditor");
         secondColumn.Required.Should().BeTrue();
         secondColumn.Hide.Should().BeFalse();
-        secondColumn.Selectable.Should().BeFalse();
+        secondColumn.IsRowSelectable.Should().BeFalse();
 
         var thirdColumn = columns.FirstOrDefault(c => c.Field == "dateProperty");
         thirdColumn.Should().NotBeNull();
@@ -72,7 +72,7 @@ public class DefaultColumnProviderTests
         thirdColumn.CellEditor.Should().BeEmpty();
         thirdColumn.Required.Should().BeTrue();
         thirdColumn.Hide.Should().BeFalse();
-        thirdColumn.Selectable.Should().BeFalse();
+        thirdColumn.IsRowSelectable.Should().BeFalse();
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public class DefaultColumnProviderTests
         column.CellEditor.Should().BeEmpty();
         column.Required.Should().BeFalse();
         column.Hide.Should().BeFalse();
-        column.Selectable.Should().BeFalse();
+        column.IsRowSelectable.Should().BeFalse();
     }
 }
 

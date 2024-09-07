@@ -15,7 +15,7 @@ namespace Gridazor.Demo.Models
         [Field("name")]
         [HeaderName("Name")]
         [Editable(true)]
-        [Selection]
+        [RowSelection]
         public string Name { get; set; } = string.Empty;
 
         [Field("description")]

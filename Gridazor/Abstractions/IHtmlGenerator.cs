@@ -3,9 +3,6 @@ using System;
 
 namespace Gridazor.Abstractions;
 
-/// <summary>
-/// Generates html elements
-/// </summary>
 internal interface IHtmlGenerator
 {
     HtmlString Generate(HtmlParams htmlParams);

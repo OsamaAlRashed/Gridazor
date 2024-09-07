@@ -162,7 +162,7 @@
                     Object.keys(row).forEach(key => {
                         const value = row[key];
                         rowHtml += `
-                            <input type="hidden" name="${settings.propertyName}[${index}].${key}" value="${value}" />
+                            <input type="hidden" id="${settings.propertyName}_${index}__${key}" name="${settings.propertyName}[${index}].${key}" value="${value}" />
                         `;
                     });
 

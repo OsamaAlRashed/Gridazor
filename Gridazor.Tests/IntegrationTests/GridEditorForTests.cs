@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Gridazor.Core;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -46,6 +47,35 @@ public class GridEditorForTests
 
         // Assert
         result.Should().NotBeNull();
+        result.ToString().Should().Contain($"id=\"gridazor-{expectedPropertyName}\"");
+        result.ToString().Should().Contain($"id=\"columnDefs-{expectedPropertyName}\">{expectedColumnDefsJson}</div>");
+        result.ToString().Should().Contain($"id=\"jsonData-{expectedPropertyName}\">{expectedJsonData}</div>");
+        result.ToString().Should().Contain("class=\"grid-class\" id=\"grid-id\"");
+    }
+
+    [Fact]
+    public void GridEditorFor_WithEmptyEnumerableType_TReturnsExpectedHtml()
+    {
+        // Arrange
+        var htmlHelperMock = new Mock<IHtmlHelper<TestModel>>();
+        var viewData = new ViewDataDictionary<TestModel>(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+        {
+            Model = new TestModel
+            {
+                Items = []
+            }
+        };
+        htmlHelperMock.SetupGet(x => x.ViewData).Returns(viewData);
+        var expectedPropertyName = nameof(TestModel.Items);
+        var expectedColumnDefsJson = JsonSerializer.Serialize(DefaultColumnProvider.Instance.Get(typeof(TestItem)), _jsonOptions);
+        var expectedJsonData = JsonSerializer.Serialize(viewData.Model.Items, _jsonOptions);
+
+        // Act
+        Expression<Func<TestModel, IEnumerable<TestItem>>> expression = model => model.Items;
+
+        // Assert
+        var result = htmlHelperMock.Object.GridEditorFor(expression, "grid-id", "grid-class");
+
         result.ToString().Should().Contain($"id=\"gridazor-{expectedPropertyName}\"");
         result.ToString().Should().Contain($"id=\"columnDefs-{expectedPropertyName}\">{expectedColumnDefsJson}</div>");
         result.ToString().Should().Contain($"id=\"jsonData-{expectedPropertyName}\">{expectedJsonData}</div>");
