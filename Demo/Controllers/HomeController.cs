@@ -8,17 +8,20 @@ namespace Gridazor.Demo.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly static List<Test> _tests = [
-        new Test() {
-            Description = "Description1",
+    private readonly static List<Test> _tests = 
+    [
+        new Test() 
+        {
             Id = Guid.NewGuid(),
             Name = "Name1",
+            Description = "Description1",
             CatId = 2
         },
-        new Test() {
-            Description = "Description2",
+        new Test() 
+        {
             Id = Guid.NewGuid(),
             Name = "Name2",
+            Description = "Description2",
             CatId = 1
         }
     ];
