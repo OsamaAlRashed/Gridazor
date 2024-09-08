@@ -24,13 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Scripts\**\*">
-      <Pack>true</Pack>
-      <PackagePath>Scripts</PackagePath>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>

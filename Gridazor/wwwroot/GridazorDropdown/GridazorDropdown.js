@@ -1,4 +1,4 @@
-﻿class CustomDropdownEditor {
+﻿class GridazorDropdown {
     constructor() {
         this.eInput = null;
         this.eDropdown = null;
