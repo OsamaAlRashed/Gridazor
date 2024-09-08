@@ -10,8 +10,9 @@
     <PackageProjectUrl>https://github.com/OsamaAlRashed/Gridazor</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/OsamaAlRashed/Gridazor</RepositoryUrl>
-    <PackageTags>asp net core,table,aggrid,razor-pages,aspmvc</PackageTags>
+    <PackageTags>asp net core;table;aggrid;razor-pages;mvc</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>1.0.0-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>

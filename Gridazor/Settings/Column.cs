@@ -7,7 +7,7 @@ namespace Gridazor.Settings;
 /// <summary>
 /// Represents the metadata of a column obtained from <see cref="IColumnsProvider"/>.
 /// </summary>
-public class Column
+public sealed class Column
 {
     /// <summary>
     /// Gets the header name of the column. Defaults to the property name.

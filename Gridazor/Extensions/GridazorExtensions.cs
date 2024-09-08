@@ -10,7 +10,10 @@ using System.Text.Json;
 
 namespace Gridazor;
 
-public static class GridazorExtenstions
+/// <summary>
+/// 
+/// </summary>
+public static class GridazorExtensions
 {
     private readonly static JsonSerializerOptions _jsonOptions = new()
     {
