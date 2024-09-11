@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Gridazor" Version="1.0.0-beta" />
+  </ItemGroup>
+
 </Project>
