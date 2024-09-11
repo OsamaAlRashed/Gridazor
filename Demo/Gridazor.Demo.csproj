@@ -7,7 +7,31 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Gridazor" Version="1.0.0-beta" />
+    <Content Remove="C:\Users\Osama\.nuget\packages\gridazor\1.0.0-alpha\contentFiles\any\net8.0\wwwroot\Scripts\CustomDropdown\CustomDropdown.css" />
+    <Content Remove="C:\Users\Osama\.nuget\packages\gridazor\1.0.0-alpha\contentFiles\any\net8.0\wwwroot\Scripts\CustomDropdown\CustomDropdown.js" />
+    <Content Remove="C:\Users\Osama\.nuget\packages\gridazor\1.0.0-alpha\contentFiles\any\net8.0\wwwroot\Scripts\Gridazor.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Gridazor" Version="1.0.0-alpha" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\lib\Gridazor\Gridazor.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <BuildAction>Content</BuildAction>
+      <Pack>true</Pack>
+    </Content>
+    <Content Update="wwwroot\lib\Gridazor\GridazorDropdown\GridazorDropdown.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <BuildAction>Content</BuildAction>
+      <Pack>true</Pack>
+    </Content>
+    <Content Update="wwwroot\lib\Gridazor\GridazorDropdown\GridazorDropdown.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <BuildAction>Content</BuildAction>
+      <Pack>true</Pack>
+    </Content>
   </ItemGroup>
 
 </Project>

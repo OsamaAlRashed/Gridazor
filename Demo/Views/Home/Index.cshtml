@@ -31,7 +31,7 @@
             overrideColumnDefs: [{
                 field: "catId",
                 headerName: "Cat Id",
-                cellEditor: CustomDropdownEditor,
+                cellEditor: GridazorDropdown,
                 cellEditorParams: {
                     values: dropdownValues.map(item => ({
                         value: item.id,
