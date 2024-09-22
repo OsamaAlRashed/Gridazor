@@ -66,6 +66,20 @@ public class FileInput : IFileInput
 
 ### Example Razor View
 
+Download the required js/css files from here:  
+[Gridazor.zip](https://github.com/user-attachments/files/17090694/Gridazor.zip)
+
+Import them in Layout.cshtml:
+```csharp
+    <link rel="stylesheet" href="~/lib/Gridazor/GridazorDropdown/GridazorDropdown.css" />
+    <link rel="stylesheet" href="~/lib/Gridazor/GridazorFileInput/GridazorFileInput.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+    <script src="~/lib/Gridazor/GridazorDropdown/GridazorDropdown.js"></script>
+    <script src="~/lib/Gridazor/GridazorFileInput/GridazorFileInput.js"></script>
+    <script src="~/lib/Gridazor/Gridazor.js"></script>
+```
+
 ```csharp
 @model IndexVM
 @using Gridazor;
@@ -92,7 +106,6 @@ public class FileInput : IFileInput
 ### Example Script Section
 ```js
 @section Scripts{
-    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
     <script>
         const dropdownValues = @Html.Raw(Json.Serialize(ViewBag.Cats));
         $("#myGrid").gridazor({
