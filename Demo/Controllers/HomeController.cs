@@ -1,6 +1,5 @@
 using Gridazor.Demo.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 
 namespace Gridazor.Demo.Controllers;
@@ -15,14 +14,24 @@ public class HomeController : Controller
             Id = Guid.NewGuid(),
             Name = "Name1",
             Description = "Description1",
-            CatId = 2
+            CatId = 2,
+            Image = new FileInput()
+            {
+                Name = "Image 1",
+                Path = "/images/dark.png"
+            }
         },
         new Test() 
         {
             Id = Guid.NewGuid(),
             Name = "Name2",
             Description = "Description2",
-            CatId = 1
+            CatId = 1,
+            Image = new FileInput()
+            {
+                Name = "Image 2",
+                Path = "/images/dark.png"
+            }
         }
     ];
 
@@ -47,11 +56,27 @@ public class HomeController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Index(IndexVM indexVM)
+    public async Task<IActionResult> Index(IndexVM indexVM)
     {
         _tests.Clear();
         foreach (var item in indexVM.Tests)
         {
+            if (item.Image?.File != null && item.Image.File.Length > 0)
+            {
+                var fileName = Path.GetFileName(item.Image.File.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await item.Image.File.CopyToAsync(stream);
+                }
+
+                item.Image.Path = "images/" + fileName;
+                item.Image.Name = fileName;
+            }
+
             _tests.Add(item);
         }
 

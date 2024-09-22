@@ -25,4 +25,13 @@ public class Test
     public string? Description { get; set; }
 
     public int CatId { get; set; }
+
+    public FileInput? Image { get; set; }
+}
+
+public class FileInput : IFileInput
+{
+    public IFormFile? File { get; set; }
+    public string? Name { get; set; }
+    public string? Path { get; set; }
 }

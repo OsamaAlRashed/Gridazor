@@ -1,5 +1,6 @@
 ﻿using Gridazor.Abstractions;
 using Gridazor.Core;
+using Gridazor.Models;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -91,25 +92,47 @@ public static class GridazorExtensions
                 new HtmlParams("div", null, "display: none;", $"id=\"columnDefs-{propertyName}\"", JsonSerializer.Serialize(columns, _jsonOptions)),
                 new HtmlParams("div", null, "display: none;", $"id=\"jsonData-{propertyName}\"", JsonSerializer.Serialize(data, _jsonOptions)),
                 new HtmlParams("div", null, "display: none;", $"id=\"data-{propertyName}\"", null,
-                    data.Select((row, index) =>
-                    {
-                        var rowHtml = new HtmlParams("div", "row", null, null, null,
-                            propertyType.GetProperties().Select(property =>
-                            {
-                                var value = property.GetValue(row);
-                                var input = new HtmlParams("input", null, null, $"id=\"{propertyName}_{index}__{property.Name}\" type=\"hidden\" name=\"{propertyName}[{index}].{property.Name}\" value=\"{value}\"");
-                                
-                                return input;
-                            }).ToArray());
-                        
-                        return rowHtml;
-                    }).ToArray()
+                    GenerateInputsFromData(propertyType, propertyName, data)
                 ),
                 new HtmlParams("div", agGridTheme, null, $"id=\"{gridId}\"")
             )
         );
-        
+
         return htmlString;
+    }
+
+    private static HtmlParams[] GenerateInputsFromData(Type propertyType, string propertyName, IEnumerable<object> data)
+    {
+        return data.Select((row, index) =>
+        {
+            var rowHtml = new HtmlParams("div", "row", null, null, null,
+                propertyType.GetProperties().Select(property =>
+                {
+                    if (property.PropertyType.GetInterfaces().Contains(typeof(IFileInput)))
+                    {
+                        var propertyValue = property.GetValue(row);
+                        return new HtmlParams("div", null, null, null, null,
+                            property.PropertyType.GetProperties().Select(fileProperty =>
+                            {
+                                object? value = default;
+                                if (propertyValue is not null)
+                                {
+                                    value = fileProperty.GetValue(propertyValue);
+                                }
+
+                                return new HtmlParams("input", null, null, $"id=\"{propertyName}_{index}__{property.Name}__{fileProperty.Name}\" type=\"hidden\" name=\"{propertyName}[{index}].{property.Name}.{fileProperty.Name}\" value=\"{value}\"");
+                            }).ToArray()
+                        );
+                    }
+
+                    var value = property.GetValue(row);
+                    var input = new HtmlParams("input", null, null, $"id=\"{propertyName}_{index}__{property.Name}\" type=\"hidden\" name=\"{propertyName}[{index}].{property.Name}\" value=\"{value}\"");
+
+                    return input;
+                }).ToArray());
+
+            return rowHtml;
+        }).ToArray();
     }
 
     private static bool IsEnumerableType(Type type)

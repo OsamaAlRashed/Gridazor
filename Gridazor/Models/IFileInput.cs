@@ -17,4 +17,9 @@ public interface IFileInput
     /// 
     /// </summary>
     public string? Name { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public string? Path { get; set; }
 }
