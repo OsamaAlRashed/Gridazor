@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Gridazor" Version="1.0.0-alpha" />
+    <PackageReference Include="Gridazor" Version="1.0.1" />
   </ItemGroup>
 
 </Project>
