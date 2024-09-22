@@ -29,32 +29,36 @@
             propertyName: '@nameof(Model.Tests)',
             enableRtl: false,
             overrideColumnDefs: [
-            {
-                field: "catId",
-                headerName: "Cat Id",
-                cellEditor: GridazorDropdown,
-                cellEditorParams: {
-                    values: dropdownValues.map(item => ({
-                        value: item.id,
-                        text: item.name
-                    }))
-                },
-                valueFormatter: function (params) {
-                    const option = params.colDef.cellEditorParams.values.find(opt => opt.value === params.value);
-                    return option ? option.text : params.value;
-                }
-            },
-            {
-                field: "image",
-                headerName: "Image",
-                cellEditor: GridazorFileInput,
-                cellRenderer: (params) => {
-                    if (params.value instanceof File) {
-                        return `<span>${params.value.name}</span>`;
+                {
+                    field: "catId",
+                    headerName: "Cat Id",
+                    cellEditor: GridazorDropdown,
+                    cellEditorParams: {
+                        values: dropdownValues.map(item => ({
+                            value: item.id,
+                            text: item.name
+                        }))
+                    },
+                    valueFormatter: function (params) {
+                        const option = params.colDef.cellEditorParams.values
+                            .find(opt => opt.value === params.value);
+
+                        return option ? option.text : params.value;
                     }
-                    return params.value ? `<a href="${params.value.path}" download>${params.value.name}</a>` : '<span>No file selected</span>';
+                },
+                {
+                    field: "image",
+                    headerName: "Image",
+                    cellEditor: GridazorFileInput,
+                    cellRenderer: (params) => {
+                        if (params.value instanceof File) {
+                            return `<span>${params.value.name}</span>`;
+                        }
+
+                        return params.value ? `<a href="${params.value.path}" download>${params.value.name}</a>` : '<span>No file selected</span>';
+                    }
                 }
-            }],
+            ],
             enableDelete: true,
             deleteButtonId: "delete-button"
         });

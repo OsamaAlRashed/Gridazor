@@ -24,6 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="wwwroot\GridazorFileInput\GridazorFileInput.css" />
+    <None Remove="wwwroot\GridazorFileInput\GridazorFileInput.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <InternalsVisibleTo Include="Gridazor.Tests" />
   </ItemGroup>
 
@@ -32,6 +37,17 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\GridazorFileInput\GridazorFileInput.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\GridazorFileInput\GridazorFileInput.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

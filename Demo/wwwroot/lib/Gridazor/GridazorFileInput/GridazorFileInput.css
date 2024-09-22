@@ -1,16 +1,1 @@
-﻿.file-preview {
-    margin-top: 10px;
-}
-
-.file-preview img {
-    max-width: 100px;
-    max-height: 100px;
-}
-
-.download-link {
-    display: inline-block;
-    margin-top: 5px;
-    color: blue;
-    text-decoration: underline;
-    cursor: pointer;
-}
+﻿

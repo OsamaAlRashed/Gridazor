@@ -24,6 +24,7 @@
         var columnDefs = JSON.parse($(`#columnDefs-${settings.propertyName}`).html());
         columnDefs = updateSelectionProperties();
         var requiredColumns = columnDefs.filter(x => x.required).map(x => x.field);
+
         columnDefs = overrideColumns(columnDefs, settings.overrideColumnDefs);
 
         // grid options
@@ -154,20 +155,62 @@
             const container = $(`#data-${settings.propertyName}`);
 
             container.html('');
-
             newData.forEach((row, index) => {
                 if (typeof row === 'object' && row !== null) {
                     let rowHtml = '<div class="row">';
 
-                    Object.keys(row).forEach(key => {
-                        const value = row[key];
-                        rowHtml += `
-                        <input type="hidden" id="${settings.propertyName}_${index}__${key}" name="${settings.propertyName}[${index}].${key}" value="${value}" />
-                        `;
+                    var fileInstance = null;
+                    var filePropName = null;
+
+                    Object.keys(row).forEach(col => {
+                        const colValue = row[col];
+                        if (colValue && typeof colValue === 'object' && colValue.hasOwnProperty('file')) {
+                            Object.keys(colValue).forEach(fileProperty => {
+                                const fileValue = colValue[fileProperty];
+
+                                if (fileProperty !== 'file') {
+                                    rowHtml += `
+                                        <input type="hidden" id="${settings.propertyName}_${index}__${col}__${fileProperty}" 
+                                           name="${settings.propertyName}[${index}].${col}.${fileProperty}" 
+                                           value="${fileValue}" />
+                                    `;
+                                }
+
+                            });
+                        }
+                        else if (colValue instanceof File) {
+                            fileInstance = colValue;
+                            filePropName = col;
+                            rowHtml += `
+                                <input type="file" id="${settings.propertyName}_${index}__${col}__File" 
+                                    name="${settings.propertyName}[${index}].${col}.File"
+                                />
+                            `;
+
+                        }
+                        else {
+                            rowHtml += `
+                                <input type="hidden" id="${settings.propertyName}_${index}__${col}" 
+                                       name="${settings.propertyName}[${index}].${col}" 
+                                       value="${colValue}" />
+                            `;
+                        }
                     });
 
                     rowHtml += '</div>';
                     container.append(rowHtml);
+
+                    var fileInput = document.getElementById(`${settings.propertyName}_${index}__${filePropName}__File`)
+                    if (fileInput) {
+                        let dt = new DataTransfer();
+                        dt.items.add(
+                            new File(
+                                [fileInstance.slice(0, fileInstance.size, fileInstance.type)],
+                                fileInstance.name
+                            ));
+
+                        fileInput.files = dt.files;
+                    }
                 } else {
                     console.warn(`Expected object but got ${typeof row}`);
                 }
