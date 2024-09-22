@@ -7,9 +7,9 @@ namespace Gridazor.Demo.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly static List<Test> _tests = 
+    private readonly static List<Product> _products = 
     [
-        new Test() 
+        new Product() 
         {
             Id = Guid.NewGuid(),
             Name = "Name1",
@@ -21,7 +21,7 @@ public class HomeController : Controller
                 Path = "/images/dark.png"
             }
         },
-        new Test() 
+        new Product() 
         {
             Id = Guid.NewGuid(),
             Name = "Name2",
@@ -35,22 +35,20 @@ public class HomeController : Controller
         }
     ];
 
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
+    public HomeController(ILogger<HomeController> logger) => _logger = logger;
 
+    [HttpGet]
     public IActionResult Index()
     {
         ViewBag.Cats = new List<SelectDto>()
         {
-            new(1, "Value1"),
-            new(2, "Value2")
+            new(1, "Category 1"),
+            new(2, "Category 2")
         };
 
         return View(new IndexVM()
         {
-            Tests = _tests
+            Products = _products
         });
     }
 
@@ -58,31 +56,35 @@ public class HomeController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Index(IndexVM indexVM)
     {
-        _tests.Clear();
-        foreach (var item in indexVM.Tests)
+        _products.Clear();
+        foreach (var item in indexVM.Products)
         {
-            if (item.Image?.File != null && item.Image.File.Length > 0)
-            {
-                var fileName = Path.GetFileName(item.Image.File.FileName);
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+            await UploadFile(item);
 
-                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await item.Image.File.CopyToAsync(stream);
-                }
-
-                item.Image.Path = "images/" + fileName;
-                item.Image.Name = fileName;
-            }
-
-            _tests.Add(item);
+            _products.Add(item);
         }
 
-        return RedirectToAction("Index");
+        return RedirectToAction(nameof(Index));
     }
 
+    private static async Task UploadFile(Product item)
+    {
+        if (item.Image?.File != null && item.Image.File.Length > 0)
+        {
+            var fileName = Path.GetFileName(item.Image.File.FileName);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await item.Image.File.CopyToAsync(stream);
+            }
+
+            item.Image.Path = "images/" + fileName;
+            item.Image.Name = fileName;
+        }
+    }
 
     public IActionResult Privacy()
     {

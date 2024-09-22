@@ -20,3 +20,13 @@
         this.eInput.focus();
     }
 }
+
+var gridazorFileInputHelper = {
+    cellRender: function (params){
+        if (params.value instanceof File) {
+            return `<span>${params.value.name}</span>`;
+        }
+
+        return params.value ? `<a href="${params.value.path}" download>${params.value.name}</a>` : '<span>No file selected</span>';
+    }
+};

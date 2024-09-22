@@ -8,11 +8,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.Json;
+using static Gridazor.Statics.Constants;
 
 namespace Gridazor;
 
 /// <summary>
-/// 
+/// Represents the Gridazor Extensions
 /// </summary>
 public static class GridazorExtensions
 {
@@ -88,13 +89,13 @@ public static class GridazorExtensions
 
         var htmlGenerator = HtmlGenerator.Instance;
         var htmlString = htmlGenerator.Generate(
-            new HtmlParams("div", null, null, $"id=\"gridazor-{propertyName}\"", null,
-                new HtmlParams("div", null, "display: none;", $"id=\"columnDefs-{propertyName}\"", JsonSerializer.Serialize(columns, _jsonOptions)),
-                new HtmlParams("div", null, "display: none;", $"id=\"jsonData-{propertyName}\"", JsonSerializer.Serialize(data, _jsonOptions)),
-                new HtmlParams("div", null, "display: none;", $"id=\"data-{propertyName}\"", null,
+            new HtmlParams(HtmlConstants.Div, null, null, $"id=\"gridazor-{propertyName}\"", null,
+                new HtmlParams(HtmlConstants.Div, null, HtmlConstants.HideElement, $"id=\"columnDefs-{propertyName}\"", JsonSerializer.Serialize(columns, _jsonOptions)),
+                new HtmlParams(HtmlConstants.Div, null, HtmlConstants.HideElement, $"id=\"jsonData-{propertyName}\"", JsonSerializer.Serialize(data, _jsonOptions)),
+                new HtmlParams(HtmlConstants.Div, null, HtmlConstants.HideElement, $"id=\"data-{propertyName}\"", null,
                     GenerateInputsFromData(propertyType, propertyName, data)
                 ),
-                new HtmlParams("div", agGridTheme, null, $"id=\"{gridId}\"")
+                new HtmlParams(HtmlConstants.Div, agGridTheme, null, $"id=\"{gridId}\"")
             )
         );
 
@@ -105,13 +106,13 @@ public static class GridazorExtensions
     {
         return data.Select((row, index) =>
         {
-            var rowHtml = new HtmlParams("div", "row", null, null, null,
+            var rowHtml = new HtmlParams(HtmlConstants.Div, "row", null, null, null,
                 propertyType.GetProperties().Select(property =>
                 {
                     if (property.PropertyType.GetInterfaces().Contains(typeof(IFileInput)))
                     {
                         var propertyValue = property.GetValue(row);
-                        return new HtmlParams("div", null, null, null, null,
+                        return new HtmlParams(HtmlConstants.Div, null, null, null, null,
                             property.PropertyType.GetProperties().Select(fileProperty =>
                             {
                                 object? value = default;
@@ -120,13 +121,13 @@ public static class GridazorExtensions
                                     value = fileProperty.GetValue(propertyValue);
                                 }
 
-                                return new HtmlParams("input", null, null, $"id=\"{propertyName}_{index}__{property.Name}__{fileProperty.Name}\" type=\"hidden\" name=\"{propertyName}[{index}].{property.Name}.{fileProperty.Name}\" value=\"{value}\"");
+                                return new HtmlParams(HtmlConstants.Input, null, null, $"id=\"{propertyName}_{index}__{property.Name}__{fileProperty.Name}\" type=\"hidden\" name=\"{propertyName}[{index}].{property.Name}.{fileProperty.Name}\" value=\"{value}\"");
                             }).ToArray()
                         );
                     }
 
                     var value = property.GetValue(row);
-                    var input = new HtmlParams("input", null, null, $"id=\"{propertyName}_{index}__{property.Name}\" type=\"hidden\" name=\"{propertyName}[{index}].{property.Name}\" value=\"{value}\"");
+                    var input = new HtmlParams(HtmlConstants.Input, null, null, $"id=\"{propertyName}_{index}__{property.Name}\" type=\"hidden\" name=\"{propertyName}[{index}].{property.Name}\" value=\"{value}\"");
 
                     return input;
                 }).ToArray());

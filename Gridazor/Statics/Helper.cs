@@ -1,29 +1,30 @@
 ﻿using System;
+using static Gridazor.Statics.Constants;
 
 namespace Gridazor.Statics;
 
 internal static class Helper
 {
-    internal static string GetDefaultCellDataType(Type t)
+    internal static string GetDefaultCellDataType(Type type)
     {
-        if (t == typeof(int))
+        if (type == typeof(int))
         {
-            return "number";
+            return CellDataType.Number;
         }
 
-        if (t == typeof(DateTime))
+        if (type == typeof(DateTime))
         {
-            return "dateString";
+            return CellDataType.DateString;
         }
 
-        return "text";
+        return CellDataType.Text;
     }
 
-    internal static string GetDefaultCellEditor(Type t)
+    internal static string GetDefaultCellEditor(Type type)
     {
-        if(t == typeof(int))
+        if (type == typeof(int))
         {
-            return "agNumberCellEditor";
+            return CellEditor.AgNumberCellEditor;
         }
 
         return string.Empty;

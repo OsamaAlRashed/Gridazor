@@ -3,29 +3,25 @@ using Gridazor.Models;
 
 namespace Gridazor.Demo.Models;
 
-public class Test
+public class Product
 {
-    [Field("id")]
-    [HeaderName("Id")]
     [Editable(false)]
     [Hide]
-    [Required(false)]
+    [Required(false)] // auto generated
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    [Field("name")]
-    [HeaderName("Name")]
-    [Editable(true)]
     [RowSelection]
+    [Required(true)]
     public string Name { get; set; } = string.Empty;
 
-    [Field("description")]
-    [HeaderName("Description")]
-    [Editable(true)]
     [CellEditor("agLargeTextCellEditor")]
     public string? Description { get; set; }
 
+    [HeaderName("Category")]
     public int CatId { get; set; }
 
+    [Required(true)]
+    [HeaderName("Image")]
     public FileInput? Image { get; set; }
 }
 

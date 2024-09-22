@@ -138,15 +138,22 @@
         function overrideColumns(columnDefs, overrideColumnDefs) {
             const columnMap = new Map();
             columnDefs.forEach(col => columnMap.set(col.field, col));
+            console.log(columnMap)
 
             overrideColumnDefs.forEach(overrideCol => {
                 if (columnMap.has(overrideCol.field)) {
-                    columnMap.set(overrideCol.field, overrideCol);
+                    const originalCol = columnMap.get(overrideCol.field);
+                    Object.keys(overrideCol).forEach(key => {
+                        originalCol[key] = overrideCol[key];
+                    });
                 }
             });
 
+            console.log(Array.from(columnMap.values()))
+
             return Array.from(columnMap.values());
         }
+
 
 
         // Event listeners

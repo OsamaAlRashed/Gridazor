@@ -95,3 +95,12 @@
         return selectedOption ? selectedOption.text : '';
     }
 }
+
+var gridazorDropdownHelper = {
+    valueFormatter: function (params) {
+        const option = params.colDef.cellEditorParams.values
+            .find(opt => opt.value === params.value);
+
+        return option ? option.text : params.value;
+    }
+};
