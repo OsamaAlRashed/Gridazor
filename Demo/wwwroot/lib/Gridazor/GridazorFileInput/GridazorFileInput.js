@@ -12,7 +12,6 @@
     }
 
     getValue() {
-        console.log(this.params.value)
         return this.eInput.files[0] ? this.eInput.files[0] : this.params.value;
     }
 
