@@ -31,22 +31,36 @@ dotnet add package Gridazor
 ```csharp
 public class IndexVM
 {
-    public List<Test> Tests { get; set; } = [];
+    public List<Product> Products { get; set; } = [];
 }
 
-public class Test
+public class Product
 {
+    [Editable(false)]
     [Hide]
-    [Required(false)]
+    [Required(false)] // auto generated
     public Guid Id { get; set; } = Guid.NewGuid();
 
     [RowSelection]
+    [Required(true)]
     public string Name { get; set; } = string.Empty;
 
     [CellEditor("agLargeTextCellEditor")]
     public string? Description { get; set; }
 
+    [HeaderName("Category")]
     public int CatId { get; set; }
+
+    [Required(true)]
+    [HeaderName("Image")]
+    public FileInput? Image { get; set; }
+}
+
+public class FileInput : IFileInput
+{
+    public IFormFile? File { get; set; }
+    public string? Name { get; set; }
+    public string? Path { get; set; }
 }
 ```
 
@@ -57,13 +71,16 @@ public class Test
 @using Gridazor;
 
 <div class="card card-primary">
-    @using (Html.BeginForm("Index", "Home", FormMethod.Post))
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post, new
+    {
+        enctype = "multipart/form-data"
+    }))
     {
         <div class="card-header">
             <button id="delete-button" type="button" class="btn btn-danger">Delete</button>
         </div>
         <div class="card-body">
-            @Html.GridEditorFor(x => x.Tests, "myGrid", "ag-theme-quartz")
+            @Html.GridEditorFor(x => x.Products, "myGrid", "ag-theme-quartz")
         </div>
         <div class="card-footer">
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -79,23 +96,25 @@ public class Test
     <script>
         const dropdownValues = @Html.Raw(Json.Serialize(ViewBag.Cats));
         $("#myGrid").gridazor({
-            propertyName: '@nameof(Model.Tests)',
-            enableRtl: false,
-            overrideColumnDefs: [{
-                field: "catId",
-                headerName: "Cat Id",
-                cellEditor: CustomDropdownEditor,
-                cellEditorParams: {
-                    values: dropdownValues.map(item => ({
-                        value: item.id,
-                        text: item.name
-                    }))
+            propertyName: '@nameof(Model.Products)',
+            overrideColumnDefs: [
+                {
+                    field: "catId",
+                    cellEditor: GridazorDropdown,
+                    cellEditorParams: {
+                        values: dropdownValues.map(item => ({
+                            value: item.id,
+                            text: item.name
+                        }))
+                    },
+                    valueFormatter: (params) => gridazorDropdownHelper.valueFormatter(params)
                 },
-                valueFormatter: function (params) {
-                    const option = params.colDef.cellEditorParams.values.find(opt => opt.value === params.value);
-                    return option ? option.text : params.value;
+                {
+                    field: "image",
+                    cellEditor: GridazorFileInput,
+                    cellRenderer: (params) => gridazorFileInputHelper.cellRender(params)
                 }
-            }],
+            ],
             enableDelete: true,
             deleteButtonId: "delete-button"
         });
