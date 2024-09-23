@@ -154,3 +154,4 @@ Contributions are welcome! especially front-end developers, to improve the custo
  - Improve the rendering of the html elements.
  - Fix the override columns functionality.
  - Include the css/js files inside the Nuget package.
+ - Remove Jquery dependency
