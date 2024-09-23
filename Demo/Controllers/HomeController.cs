@@ -12,8 +12,8 @@ public class HomeController : Controller
         new Product() 
         {
             Id = Guid.NewGuid(),
-            Name = "Name1",
-            Description = "Description1",
+            Name = "Name 1",
+            Description = "Description 1",
             CatId = 2,
             Image = new FileInput()
             {
@@ -24,8 +24,8 @@ public class HomeController : Controller
         new Product() 
         {
             Id = Guid.NewGuid(),
-            Name = "Name2",
-            Description = "Description2",
+            Name = "Name 2",
+            Description = "Description 2",
             CatId = 1,
             Image = new FileInput()
             {
