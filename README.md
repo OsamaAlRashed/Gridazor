@@ -66,10 +66,10 @@ public class FileInput : IFileInput
 
 ### Example Razor View
 
-Download the required js/css files from here:  
+- Download the required js/css files from here:  
 [Gridazor.zip](https://github.com/user-attachments/files/17090694/Gridazor.zip)
 
-Import them in Layout.cshtml:
+- Import them in Layout.cshtml:
 ```csharp
 <link rel="stylesheet" href="~/lib/Gridazor/GridazorDropdown/GridazorDropdown.css" />
 <link rel="stylesheet" href="~/lib/Gridazor/GridazorFileInput/GridazorFileInput.css" />
