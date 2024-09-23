@@ -71,13 +71,13 @@ Download the required js/css files from here:
 
 Import them in Layout.cshtml:
 ```csharp
-    <link rel="stylesheet" href="~/lib/Gridazor/GridazorDropdown/GridazorDropdown.css" />
-    <link rel="stylesheet" href="~/lib/Gridazor/GridazorFileInput/GridazorFileInput.css" />
+<link rel="stylesheet" href="~/lib/Gridazor/GridazorDropdown/GridazorDropdown.css" />
+<link rel="stylesheet" href="~/lib/Gridazor/GridazorFileInput/GridazorFileInput.css" />
 
-    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
-    <script src="~/lib/Gridazor/GridazorDropdown/GridazorDropdown.js"></script>
-    <script src="~/lib/Gridazor/GridazorFileInput/GridazorFileInput.js"></script>
-    <script src="~/lib/Gridazor/Gridazor.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+<script src="~/lib/Gridazor/GridazorDropdown/GridazorDropdown.js"></script>
+<script src="~/lib/Gridazor/GridazorFileInput/GridazorFileInput.js"></script>
+<script src="~/lib/Gridazor/Gridazor.js"></script>
 ```
 
 ```csharp
