@@ -8,6 +8,7 @@
     }))
     {
         <div class="card-header">
+            <button id="add-button" type="button" class="btn btn-primary">Add</button>
             <button id="delete-button" type="button" class="btn btn-danger">Delete</button>
         </div>
         <div class="card-body">
@@ -24,8 +25,9 @@
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
     <script>
         const dropdownValues = @Html.Raw(Json.Serialize(ViewBag.Cats));
-        $("#myGrid").gridazor({
-            propertyName: '@nameof(Model.Products)',
+        const gridElement = document.querySelector('#myGrid');
+        const gridazor = new Gridazor(gridElement, {
+            propertyName: '@nameof(Model.Products)', 
             overrideColumnDefs: [
                 {
                     field: "catId",
@@ -45,7 +47,9 @@
                 }
             ],
             enableDelete: true,
-            deleteButtonId: "delete-button"
+            deleteButtonId: "delete-button",
+            addByButton: true,
+            addButtonId: "add-button"
         });
     </script>
 }

@@ -1,236 +1,245 @@
-﻿(function ($) {
-    let data = [];
-    let inputRow = {};
+﻿class Gridazor {
+    constructor(element, options = {}) {
+        this.element = element;
+        this.data = [];
+        this.inputRow = {};
 
-    $.fn.gridazor = function (options) {
-        const settings = $.extend({
+        this.settings = {
             propertyName: "",
             enableRtl: false,
             overrideColumnDefs: [],
             enableDelete: true,
-            deleteButtonId: ""
-        }, options);
+            deleteButtonId: "",
+            addByButton: false,
+            addButtonId: "",
+            ...options
+        };
 
-        // check
-        if (!settings.propertyName) {
+        this.validateSettings();
+        this.columnDefs = this.updateSelectionProperties(
+            JSON.parse(document.getElementById(`columnDefs-${this.settings.propertyName}`).innerHTML)
+        );
+        this.requiredColumns = this.columnDefs
+            .filter(col => col.required)
+            .map(col => col.field);
+
+        this.columnDefs = this.overrideColumns(this.columnDefs, this.settings.overrideColumnDefs);
+
+        // Grid options
+        this.gridOptions = this.initializeGridOptions();
+        this.gridApi = agGrid.createGrid(this.element, this.gridOptions);
+
+        const jsonData = JSON.parse(document.getElementById(`jsonData-${this.settings.propertyName}`).innerHTML);
+        this.setRowData(jsonData);
+
+        // Add event listeners
+        this.addRowChangedListener();
+        if (this.settings.enableDelete) {
+            this.addDeleteButtonListener();
+        }
+        if (this.settings.addByButton) {
+            this.addAddButtonListener();
+        }
+    }
+
+    validateSettings() {
+        if (!this.settings.propertyName) {
             throw new Error("'propertyName' is required.");
         }
 
-        if (settings.enableDelete && !settings.deleteButtonId) {
+        if (this.settings.enableDelete && !this.settings.deleteButtonId) {
             throw new Error("'deleteButtonId' is required since the delete button is enabled.");
         }
 
-        // update columnDefs
-        var columnDefs = JSON.parse($(`#columnDefs-${settings.propertyName}`).html());
-        columnDefs = updateSelectionProperties();
-        var requiredColumns = columnDefs.filter(x => x.required).map(x => x.field);
-       
-        columnDefs = overrideColumns(columnDefs, settings.overrideColumnDefs);
+        if (this.settings.addByButton && !this.settings.addButtonId) {
+            throw new Error("'addButtonId' is required since the add button is enabled.");
+        }
+    }
 
-        // grid options
-        const gridOptions = {
+    initializeGridOptions() {
+        return {
             data: null,
             pagination: true,
-            enableRtl: settings.enableRtl,
-            columnDefs: columnDefs,
+            enableRtl: this.settings.enableRtl,
+            columnDefs: this.columnDefs,
             domLayout: 'autoHeight',
             rowSelection: 'multiple',
-            onCellValueChanged: updateCell,
-            pinnedTopRowData: [inputRow],
-            getRowStyle: ({ node }) =>
-                node.rowPinned ? { 'font-weight': 'bold', 'font-style': 'italic' } : 0,
+            onCellValueChanged: this.updateCell.bind(this),
+            pinnedTopRowData: [this.inputRow],
+            getRowStyle: ({ node }) => node.rowPinned ? { 'font-weight': 'bold', 'font-style': 'italic' } : null,
             defaultColDef: {
                 flex: 1,
                 editable: true,
-                valueFormatter: (params) =>
-                    isEmptyPinnedCell(params)
-                        ? createPinnedCellPlaceholder(params)
-                        : undefined,
+                valueFormatter: (params) => this.isEmptyPinnedCell(params)
+                    ? this.createPinnedCellPlaceholder(params)
+                    : undefined,
             },
             onCellEditingStopped: (params) => {
-                if (isPinnedRowDataCompleted(params, requiredColumns)) {
-                    var newRow = { ...inputRow };
-                    gridApi.applyTransaction({ add: [newRow] });
-
-                    inputRow = {};
-
-                    const pinnedTopRow = gridApi.getPinnedTopRow(0);
-                    pinnedTopRow.setData(inputRow);
-
-                    const event = new CustomEvent('rowsChanged', { detail: getAllRows() });
-                    document.dispatchEvent(event);
+                if (!this.settings.addByButton) {
+                    this.addRow(params)
                 }
             },
-            onGridReady: (params) => {
-                gridApi.sizeColumnsToFit();
+            onGridReady: () => {
+                this.gridApi.sizeColumnsToFit();
             },
-            onFirstDataRendered: (params) => {
-                gridApi.sizeColumnsToFit();
+            onFirstDataRendered: () => {
+                this.gridApi.sizeColumnsToFit();
             }
         };
+    }
 
-        // init the grid
-        const gridDiv = this[0];
-        let gridApi = agGrid.createGrid(gridDiv, gridOptions);
+    addRow(params) {
+        console.log(params)
+        console.log(this.gridApi.getPinnedTopRow())
+        if (this.isPinnedRowDataCompleted(params)) {
+            const newRow = { ...this.inputRow };
+            this.gridApi.applyTransaction({ add: [newRow] });
 
-        var jsonData = JSON.parse($(`#jsonData-${settings.propertyName}`).html());
-        setRowData(jsonData)
+            this.inputRow = {};
+            const pinnedTopRow = this.gridApi.getPinnedTopRow(0);
+            pinnedTopRow.setData(this.inputRow);
 
-
-        // functions
-        function isEmptyPinnedCell({ node, value }) {
-            return (
-                (node.rowPinned === 'top' && value == null) ||
-                (node.rowPinned === 'top' && value == '')
-            );
+            this.dispatchRowsChangedEvent();
         }
+    }
 
-        function setRowData(newData) {
-            data = newData;
-            gridApi.applyTransaction({ add: data });
-        }
+    setRowData(newData) {
+        this.data = newData;
+        this.gridApi.applyTransaction({ add: this.data });
+    }
 
-        function updateSelectionProperties() {
-            var newProperties = {
-                headerCheckboxSelection: true,
-                checkboxSelection: true,
-                showDisabledCheckboxes: true
+    updateSelectionProperties(columnDefs) {
+        const newProperties = {
+            headerCheckboxSelection: true,
+            checkboxSelection: true,
+            showDisabledCheckboxes: true
+        };
+
+        return columnDefs.map(col => {
+            if (col.isRowSelectable) {
+                return { ...col, ...newProperties };
             }
+            return col;
+        });
+    }
 
-            return columnDefs.map(col => {
-                if (col.isRowSelectable) {
-                    return { ...col, ...newProperties };
-                }
+    isEmptyPinnedCell({ node, value }) {
+        return (node.rowPinned === 'top' && (value === null || value === ''));
+    }
 
-                return col;
-            });
+    createPinnedCellPlaceholder({ colDef }) {
+        return `${colDef.headerName}...`;
+    }
+
+    isPinnedRowDataCompleted(params) {
+        if (params.rowPinned !== 'top') return false;
+
+        return this.columnDefs
+            .filter(col => this.requiredColumns.includes(col.field))
+            .every(col => this.inputRow[col.field]);
+    }
+
+    updateCell(e) {
+        if (e.oldValue !== e.newValue) {
+            this.dispatchRowsChangedEvent();
         }
+    }
 
-        function createPinnedCellPlaceholder({ colDef }) {
-            return colDef.headerName + '...';
-        }
+    getAllRows() {
+        const rowData = [];
+        this.gridApi.forEachNode(node => rowData.push(node.data));
+        return rowData;
+    }
 
-        function isPinnedRowDataCompleted(params, requiredColumns) {
-            if (params.rowPinned !== 'top')
-                return;
+    overrideColumns(columnDefs, overrideColumnDefs) {
+        const columnMap = new Map(columnDefs.map(col => [col.field, col]));
 
-            var isCompleted = columnDefs
-                .filter(
-                    (def) => requiredColumns.includes(def.field))
-                .every((def) => inputRow[def.field]);
-
-            return isCompleted;
-        }
-
-        function updateCell(e) {
-            if (e.oldValue !== e.newValue) {
-                const event = new CustomEvent('rowsChanged', { detail: getAllRows() });
-                document.dispatchEvent(event);
+        overrideColumnDefs.forEach(overrideCol => {
+            if (columnMap.has(overrideCol.field)) {
+                columnMap.set(overrideCol.field, overrideCol);
             }
-        }
+        });
 
-        function getAllRows() {
-            let rowData = [];
-            gridApi.forEachNode(node => rowData.push(node.data));
-            return rowData;
-        }
+        return Array.from(columnMap.values());
+    }
 
-        function overrideColumns(columnDefs, overrideColumnDefs) {
-            const columnMap = new Map();
-            columnDefs.forEach(col => columnMap.set(col.field, col));
+    dispatchRowsChangedEvent() {
+        const event = new CustomEvent('rowsChanged', { detail: this.getAllRows() });
+        document.dispatchEvent(event);
+    }
 
-            overrideColumnDefs.forEach(overrideCol => {
-                if (columnMap.has(overrideCol.field)) {
-                    columnMap.set(overrideCol.field, overrideCol);
-                }
-            });
-
-            return Array.from(columnMap.values());
-        }
-
-        // Event listeners
+    addRowChangedListener() {
         document.addEventListener('rowsChanged', (e) => {
             const newData = e.detail;
-            const container = $(`#data-${settings.propertyName}`);
+            const container = document.getElementById(`data-${this.settings.propertyName}`);
+            container.innerHTML = '';
 
-            container.html('');
             newData.forEach((row, index) => {
                 if (typeof row === 'object' && row !== null) {
                     let rowHtml = '<div class="row">';
-
-                    var fileInstance = null;
-                    var filePropName = null;
+                    let fileInstance = null;
+                    let filePropName = null;
 
                     Object.keys(row).forEach(col => {
                         const colValue = row[col];
                         if (colValue && typeof colValue === 'object' && colValue.hasOwnProperty('file')) {
                             Object.keys(colValue).forEach(fileProperty => {
-                                const fileValue = colValue[fileProperty];
-
                                 if (fileProperty !== 'file') {
                                     rowHtml += `
-                                        <input type="hidden" id="${settings.propertyName}_${index}__${col}__${fileProperty}" 
-                                           name="${settings.propertyName}[${index}].${col}.${fileProperty}" 
-                                           value="${fileValue}" />
+                                        <input type="hidden" id="${this.settings.propertyName}_${index}__${col}__${fileProperty}" 
+                                               name="${this.settings.propertyName}[${index}].${col}.${fileProperty}" 
+                                               value="${colValue[fileProperty]}" />
                                     `;
                                 }
-                                
                             });
-                        }
-                        else if (colValue instanceof File) {
+                        } else if (colValue instanceof File) {
                             fileInstance = colValue;
                             filePropName = col;
                             rowHtml += `
-                                <input type="file" id="${settings.propertyName}_${index}__${col}__File" 
-                                    name="${settings.propertyName}[${index}].${col}.File"
-                                />
+                                <input type="file" id="${this.settings.propertyName}_${index}__${col}__File" 
+                                       name="${this.settings.propertyName}[${index}].${col}.File" />
                             `;
-                            
-                        }
-                        else {
+                        } else {
                             rowHtml += `
-                                <input type="hidden" id="${settings.propertyName}_${index}__${col}" 
-                                       name="${settings.propertyName}[${index}].${col}" 
+                                <input type="hidden" id="${this.settings.propertyName}_${index}__${col}" 
+                                       name="${this.settings.propertyName}[${index}].${col}" 
                                        value="${colValue}" />
                             `;
                         }
                     });
 
                     rowHtml += '</div>';
-                    container.append(rowHtml);
+                    container.insertAdjacentHTML('beforeend', rowHtml);
 
-                    var fileInput = document.getElementById(`${settings.propertyName}_${index}__${filePropName}__File`)
-                    if (fileInput) {
-                        let dt = new DataTransfer();
-                        dt.items.add(
-                            new File(
-                                [fileInstance.slice(0, fileInstance.size, fileInstance.type)],
-                                fileInstance.name
-                            ));
-
-                        fileInput.files = dt.files;
+                    if (fileInstance) {
+                        const fileInput = document.getElementById(`${this.settings.propertyName}_${index}__${filePropName}__File`);
+                        if (fileInput) {
+                            const dt = new DataTransfer();
+                            dt.items.add(new File([fileInstance.slice(0, fileInstance.size, fileInstance.type)], fileInstance.name));
+                            fileInput.files = dt.files;
+                        }
                     }
                 } else {
                     console.warn(`Expected object but got ${typeof row}`);
                 }
             });
         });
+    }
 
-        if (settings.enableDelete) {
-            document.getElementById(settings.deleteButtonId).addEventListener('click', function () {
-                var selectItems = gridApi.getSelectedRows();
+    addDeleteButtonListener() {
+        document.getElementById(this.settings.deleteButtonId).addEventListener('click', () => {
+            const selectedItems = this.gridApi.getSelectedRows();
 
-                if (selectItems.length === 0) {
-                    return;
-                }
+            if (selectedItems.length > 0) {
+                this.gridApi.applyTransaction({ remove: selectedItems });
+                this.dispatchRowsChangedEvent();
+            }
+        });
+    }
 
-                gridApi.applyTransaction({ remove: selectItems });
-
-                const event = new CustomEvent('rowsChanged', { detail: getAllRows() });
-                document.dispatchEvent(event);
-            })
-        }
-
-        return this;
-    };
-}(jQuery));
+    addAddButtonListener() {
+        document.getElementById(this.settings.addButtonId).addEventListener('click', () => {
+            this.addRow(this.params);
+        });
+    }
+}
