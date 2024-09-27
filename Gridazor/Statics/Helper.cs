@@ -12,12 +12,17 @@ internal static class Helper
             return CellDataType.Number;
         }
 
+        if (type == typeof(string))
+        {
+            return CellDataType.Text;
+        }
+
         if (type == typeof(DateTime))
         {
             return CellDataType.DateString;
         }
 
-        return CellDataType.Text;
+        return string.Empty;
     }
 
     internal static string GetDefaultCellEditor(Type type)
