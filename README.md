@@ -149,10 +149,10 @@ Gridazor allows for extensive customization, including:
 Contributions are welcome! especially front-end developers, to improve the custom editors styles :)
 
 ## Todo
- - Support Custom button for inserting the row.
+ - Support Custom button for inserting the row. ✅
  - Improve the style of the custom inputs.
  - Improve the rendering of the html elements.
  - Fix the override columns functionality.
  - Include the css/js files inside the Nuget package.
- - Remove Jquery dependency
+ - Remove Jquery dependency. ✅
  - add integration tests for the js functionality.
