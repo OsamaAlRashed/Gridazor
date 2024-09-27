@@ -157,3 +157,4 @@ Contributions are welcome! especially front-end developers, to improve the custo
  - Remove Jquery dependency. ✅
  - Add integration tests for the js functionality.
  - Extend Gridazor options with AgGrid options.
+ - Introduce more events.
