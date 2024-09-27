@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 **/wwwroot/images
+/Demo/wwwroot/lib/Gridazor-1.0.2.zip
