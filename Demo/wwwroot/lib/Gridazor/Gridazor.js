@@ -88,15 +88,13 @@
         };
     }
 
-    addRow(params) {
-        console.log(params)
-        console.log(this.gridApi.getPinnedTopRow())
-        if (this.isPinnedRowDataCompleted(params)) {
+    addRow() {
+        const pinnedTopRow = this.gridApi.getPinnedTopRow(0);
+        if (this.isPinnedRowDataCompleted(pinnedTopRow.rowPinned)) {
             const newRow = { ...this.inputRow };
             this.gridApi.applyTransaction({ add: [newRow] });
 
             this.inputRow = {};
-            const pinnedTopRow = this.gridApi.getPinnedTopRow(0);
             pinnedTopRow.setData(this.inputRow);
 
             this.dispatchRowsChangedEvent();
@@ -131,8 +129,8 @@
         return `${colDef.headerName}...`;
     }
 
-    isPinnedRowDataCompleted(params) {
-        if (params.rowPinned !== 'top') return false;
+    isPinnedRowDataCompleted(rowPinned) {
+        if (rowPinned !== 'top') return false;
 
         return this.columnDefs
             .filter(col => this.requiredColumns.includes(col.field))
