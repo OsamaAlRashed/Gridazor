@@ -7,7 +7,12 @@ internal static class Helper
 {
     internal static string GetDefaultCellDataType(Type type)
     {
-        if (type == typeof(int))
+        if (type == typeof(int) || 
+            type == typeof(short) || 
+            type == typeof(long) ||
+            type == typeof(double) ||
+            type == typeof(decimal) ||
+            type == typeof(float))
         {
             return CellDataType.Number;
         }
@@ -17,9 +22,16 @@ internal static class Helper
             return CellDataType.Text;
         }
 
-        if (type == typeof(DateTime))
+        if (type == typeof(DateTime) ||
+            type == typeof(DateOnly) ||
+            type == typeof(DateTimeOffset))
         {
             return CellDataType.DateString;
+        }
+
+        if (type == typeof(bool))
+        {
+            return CellDataType.Boolean;
         }
 
         return string.Empty;
@@ -27,9 +39,26 @@ internal static class Helper
 
     internal static string GetDefaultCellEditor(Type type)
     {
-        if (type == typeof(int))
+        if (type == typeof(int) ||
+            type == typeof(short) ||
+            type == typeof(long) ||
+            type == typeof(double) ||
+            type == typeof(decimal) ||
+            type == typeof(float))
         {
             return CellEditor.AgNumberCellEditor;
+        }
+
+        if(type == typeof(bool))
+        {
+            return CellEditor.AgCheckboxCellEditor;
+        }
+
+        if (type == typeof(DateTime) ||
+            type == typeof(DateOnly) ||
+            type == typeof(DateTimeOffset))
+        {
+            return CellEditor.AgDateStringCellEditor;
         }
 
         return string.Empty;

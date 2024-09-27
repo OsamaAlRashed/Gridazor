@@ -24,7 +24,8 @@
 @section Scripts{
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
     <script>
-        const dropdownValues = @Html.Raw(Json.Serialize(ViewBag.Cats));
+        const categories = @Html.Raw(Json.Serialize(ViewBag.Cats));
+        const qualityList = @Html.Raw(Json.Serialize(ViewBag.QualityList));
         const gridElement = document.querySelector('#myGrid');
         const gridazor = new Gridazor(gridElement, {
             propertyName: '@nameof(Model.Products)', 
@@ -33,7 +34,22 @@
                     field: "catId",
                     cellEditor: GridazorDropdown,
                     cellEditorParams: {
-                        values: dropdownValues.map(item => ({
+                        values: categories.map(item => ({
+                            value: item.id,
+                            text: item.name
+                        }))
+                    },
+                    valueFormatter: (params) => gridazorDropdownHelper.valueFormatter(params)
+                },
+                {
+                    field: "dateTime",
+                    valueGetter: p => gridazorDateInputHelper.valueGetter(p)
+                },
+                {
+                    field: "quality",
+                    cellEditor: GridazorDropdown,
+                    cellEditorParams: {
+                        values: qualityList.map(item => ({
                             value: item.id,
                             text: item.name
                         }))
@@ -44,6 +60,22 @@
                     field: "image",
                     cellEditor: GridazorFileInput,
                     cellRenderer: (params) => gridazorFileInputHelper.cellRender(params)
+                },
+                {
+                    field: "price",
+                    cellEditorParams: {
+                        min: 0,
+                        max: 10000,
+                        precision: 2
+                    }
+                },
+                {
+                    field: "quantity",
+                    cellEditorParams: {
+                        min: 1,
+                        max: 100,
+                        precision: 0
+                    }
                 }
             ],
             enableDelete: true,

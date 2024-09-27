@@ -14,6 +14,11 @@ public class Product
     [Required(true)]
     public string Name { get; set; } = string.Empty;
 
+    public bool Selected { get; set; }
+
+    public DateOnly Date { get; set; }
+    public DateTime DateTime { get; set; }
+
     [CellEditor("agLargeTextCellEditor")]
     public string? Description { get; set; }
 
@@ -23,6 +28,16 @@ public class Product
     [Required(true)]
     [HeaderName("Image")]
     public FileInput? Image { get; set; }
+    public double Price { get; set; }
+    public int Quantity { get; set; }
+    public Quality Quality { get; set; }
+}
+
+public enum Quality
+{
+    Low,
+    Medium, 
+    High
 }
 
 public class FileInput : IFileInput

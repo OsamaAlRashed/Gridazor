@@ -134,7 +134,11 @@
 
         return this.columnDefs
             .filter(col => this.requiredColumns.includes(col.field))
-            .every(col => this.inputRow[col.field]);
+            .every(col => {
+                const value = this.inputRow[col.field];
+
+                return value !== undefined && value !== null && value !== '';
+            });
     }
 
     updateCell(e) {
@@ -149,28 +153,12 @@
         return rowData;
     }
 
-    //overrideColumns(columnDefs, overrideColumnDefs) {
-    //    const columnMap = new Map(columnDefs.map(col => [col.field, col]));
-
-    //    overrideColumnDefs.forEach(overrideCol => {
-    //        if (columnMap.has(overrideCol.field)) {
-    //            columnMap.set(overrideCol.field, overrideCol);
-    //        }
-    //    });
-
-    //    return Array.from(columnMap.values());
-    //}
-
     overrideColumns(columnDefs, overrideColumnDefs) {
         const columnMap = new Map();
-
-        // Add all columns to the map
         columnDefs.forEach(col => columnMap.set(col.field, col));
 
-        // Apply overrides
         overrideColumnDefs.forEach(overrideCol => {
             if (columnMap.has(overrideCol.field)) {
-                // Get the original column and override only the provided properties
                 const originalCol = columnMap.get(overrideCol.field);
                 Object.keys(overrideCol).forEach(key => {
                     originalCol[key] = overrideCol[key];
@@ -178,9 +166,6 @@
             }
         });
 
-        console.log(columnMap.values())
-
-        // Return the updated column definitions
         return Array.from(columnMap.values());
     }
 
@@ -265,3 +250,15 @@
         });
     }
 }
+
+var gridazorDateInputHelper = {
+    valueGetter: function (p) {
+        var colName = p.colDef.field;
+
+        if (!p.data[colName]) {
+            return '';
+        }
+
+        return p.data[colName].substring(0, 10);
+    }
+};

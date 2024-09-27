@@ -19,7 +19,13 @@ public class HomeController : Controller
             {
                 Name = "Image 1",
                 Path = "/images/dark.png"
-            }
+            },
+            Date = DateOnly.MaxValue,
+            Selected = false,
+            Price = 100.23,
+            Quantity = 5,
+            Quality = Quality.High,
+            DateTime = DateTime.Now
         },
         new Product() 
         {
@@ -31,7 +37,13 @@ public class HomeController : Controller
             {
                 Name = "Image 2",
                 Path = "/images/dark.png"
-            }
+            },
+            Date = DateOnly.MaxValue,
+            Selected = false,
+            Price = 10.11,
+            Quantity = 1,
+            Quality = Quality.Low,
+            DateTime = DateTime.Now
         }
     ];
 
@@ -45,6 +57,10 @@ public class HomeController : Controller
             new(1, "Category 1"),
             new(2, "Category 2")
         };
+
+        ViewBag.QualityList = Enum.GetValues<Quality>()
+            .Select(x => new SelectDto((int)x, x.ToString()))
+            .ToList();
 
         return View(new IndexVM()
         {
