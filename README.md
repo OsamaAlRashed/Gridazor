@@ -156,3 +156,4 @@ Contributions are welcome! especially front-end developers, to improve the custo
  - Include the css/js files inside the Nuget package.
  - Remove Jquery dependency. ✅
  - add integration tests for the js functionality.
+ - Extend gridazor with AgGrid options.
