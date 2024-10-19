@@ -19,10 +19,8 @@
         this.columnDefs = this.updateSelectionProperties(
             JSON.parse(document.getElementById(`columnDefs-${this.settings.propertyName}`).innerHTML)
         );
-
-        console.log(this.columnDefs)
+        
         this.columnDefs = this.updateCellStyleIfRequired(this.columnDefs);
-        console.log(this.columnDefs)
 
         this.requiredColumns = this.columnDefs
             .filter(col => col.required)
