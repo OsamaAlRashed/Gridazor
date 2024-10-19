@@ -83,5 +83,25 @@
             addByButton: true,
             addButtonId: "add-button"
         });
+
+        document.addEventListener('rowsAfterChanging', function (e) {
+            console.log('rowsAfterChanging', e)
+        });
+
+        document.addEventListener('rowUpdated', function (e) {
+            console.log('rowUpdated', e)
+        });
+
+        document.addEventListener('rowAdded', function (e) {
+            console.log('rowAdded', e)
+        });
+
+        document.addEventListener('rowDeleted', function (e) {
+            console.log('rowDeleted', e)
+        });
+
+        document.addEventListener('gridazorCellValueChanged', function (e) {
+            console.log('gridazorCellValueChanged', e)
+        });
     </script>
 }

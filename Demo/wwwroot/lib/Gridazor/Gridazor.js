@@ -19,6 +19,11 @@
         this.columnDefs = this.updateSelectionProperties(
             JSON.parse(document.getElementById(`columnDefs-${this.settings.propertyName}`).innerHTML)
         );
+
+        console.log(this.columnDefs)
+        this.columnDefs = this.updateCellStyleIfRequired(this.columnDefs);
+        console.log(this.columnDefs)
+
         this.requiredColumns = this.columnDefs
             .filter(col => col.required)
             .map(col => col.field);
@@ -34,6 +39,7 @@
 
         // Add event listeners
         this.addRowChangedListener();
+        
         if (this.settings.enableDelete) {
             this.addDeleteButtonListener();
         }
@@ -56,15 +62,38 @@
         }
     }
 
+    updateCellStyleIfRequired(columnDefs) {
+        var cellClassProp = {
+            cellClass: params => {
+                if (params.value === undefined || params.value === null || params.value === '') {
+                    return 'red-border-cell';
+                }
+
+                return '';
+            }
+        }
+
+        columnDefs = columnDefs.map(overrideCol => {
+            if (overrideCol.required) {
+                return { ...overrideCol, ...cellClassProp }
+            }
+
+            return overrideCol;
+        })
+
+        return columnDefs;
+    }
+
     initializeGridOptions() {
-        return {
+        const defaultGridOptions = {
             data: null,
             pagination: true,
-            enableRtl: this.settings.enableRtl,
             columnDefs: this.columnDefs,
             domLayout: 'autoHeight',
-            rowSelection: 'multiple',
-            onCellValueChanged: this.updateCell.bind(this),
+            rowSelection: 'multiple', // Default value
+            onCellValueChanged: (e) => {
+                this.updateCell(e);
+            },
             pinnedTopRowData: [this.inputRow],
             getRowStyle: ({ node }) => node.rowPinned ? { 'font-weight': 'bold', 'font-style': 'italic' } : null,
             defaultColDef: {
@@ -76,7 +105,7 @@
             },
             onCellEditingStopped: (params) => {
                 if (!this.settings.addByButton) {
-                    this.addRow(params)
+                    this.addRow(params);
                 }
             },
             onGridReady: () => {
@@ -85,6 +114,11 @@
             onFirstDataRendered: () => {
                 this.gridApi.sizeColumnsToFit();
             }
+        };
+
+        return {
+            ...defaultGridOptions,
+            ...this.settings.gridOptions
         };
     }
 
@@ -97,7 +131,8 @@
             this.inputRow = {};
             pinnedTopRow.setData(this.inputRow);
 
-            this.dispatchRowsChangedEvent();
+            this.dispatchRowsAfterChangingEvent();
+            this.dispatchRowAddedEvent(newRow);
         }
     }
 
@@ -143,7 +178,9 @@
 
     updateCell(e) {
         if (e.oldValue !== e.newValue) {
-            this.dispatchRowsChangedEvent();
+            this.dispatchRowUpdatedEvent(e.data);
+            this.dispatchRowsAfterChangingEvent();
+            this.dispatchGridazorCellValueChanged(e)
         }
     }
 
@@ -170,8 +207,28 @@
     }
 
 
-    dispatchRowsChangedEvent() {
-        const event = new CustomEvent('rowsChanged', { detail: this.getAllRows() });
+    dispatchRowsAfterChangingEvent() {
+        const event = new CustomEvent('rowsAfterChanging', { detail: this.getAllRows() });
+        document.dispatchEvent(event);
+    }
+
+    dispatchRowUpdatedEvent(row) {
+        const event = new CustomEvent('rowUpdated', { detail: row });
+        document.dispatchEvent(event);
+    }
+
+    dispatchRowAddedEvent(row) {
+        const event = new CustomEvent('rowAdded', { detail: row });
+        document.dispatchEvent(event);
+    }
+
+    dispatchRowsDeletedEvent(rows) {
+        const event = new CustomEvent('rowDeleted', { detail: rows });
+        document.dispatchEvent(event);
+    }
+
+    dispatchGridazorCellValueChanged(e) {
+        const event = new CustomEvent('gridazorCellValueChanged', { detail: e });
         document.dispatchEvent(event);
     }
 
@@ -234,17 +291,28 @@
     }
 
     addDeleteButtonListener() {
+        if (!document.getElementById(this.settings.deleteButtonId)) {
+            console.warn("there is no element with id" + this.settings.deleteButtonId)
+            return;
+        }
+
         document.getElementById(this.settings.deleteButtonId).addEventListener('click', () => {
             const selectedItems = this.gridApi.getSelectedRows();
 
             if (selectedItems.length > 0) {
                 this.gridApi.applyTransaction({ remove: selectedItems });
-                this.dispatchRowsChangedEvent();
+                this.dispatchRowsAfterChangingEvent();
+                this.dispatchRowsDeletedEvent(selectedItems);
             }
         });
     }
 
     addAddButtonListener() {
+        if (!document.getElementById(this.settings.addButtonId)) {
+            console.warn("there is no element with id" + this.settings.addButtonId)
+            return;
+        }
+
         document.getElementById(this.settings.addButtonId).addEventListener('click', () => {
             this.addRow(this.params);
         });

@@ -1,71 +1,63 @@
 ﻿using System;
+using System.Linq;
 using static Gridazor.Statics.Constants;
 
 namespace Gridazor.Statics;
 
 internal static class Helper
 {
+    private static readonly Type[] NumberTypes =
+    {
+        typeof(int), typeof(short), typeof(long),
+        typeof(double), typeof(decimal), typeof(float),
+        typeof(int?), typeof(short?), typeof(long?),
+        typeof(double?), typeof(decimal?), typeof(float?)
+    };
+
+    private static readonly Type[] DateTypes =
+    {
+        typeof(DateTime), typeof(DateOnly), typeof(DateTimeOffset),
+        typeof(DateTime?), typeof(DateOnly?), typeof(DateTimeOffset?)
+    };
+
+    private static readonly Type[] BooleanTypes =
+    {
+        typeof(bool), typeof(bool?)
+    };
+
     internal static string GetDefaultCellDataType(Type type)
     {
-        if (type == typeof(int) || 
-            type == typeof(short) || 
-            type == typeof(long) ||
-            type == typeof(double) ||
-            type == typeof(decimal) ||
-            type == typeof(float))
-        {
+        if (NumberTypes.Contains(type))
             return CellDataType.Number;
-        }
 
         if (type == typeof(string))
-        {
             return CellDataType.Text;
-        }
 
-        if (type == typeof(DateTime) ||
-            type == typeof(DateOnly) ||
-            type == typeof(DateTimeOffset))
-        {
+        if (DateTypes.Contains(type))
             return CellDataType.DateString;
-        }
 
-        if (type == typeof(bool))
-        {
+        if (BooleanTypes.Contains(type))
             return CellDataType.Boolean;
-        }
 
         return string.Empty;
     }
 
     internal static string GetDefaultCellEditor(Type type)
     {
-        if (type == typeof(int) ||
-            type == typeof(short) ||
-            type == typeof(long) ||
-            type == typeof(double) ||
-            type == typeof(decimal) ||
-            type == typeof(float))
-        {
+        if (NumberTypes.Contains(type))
             return CellEditor.AgNumberCellEditor;
-        }
 
-        if(type == typeof(bool))
-        {
+        if (BooleanTypes.Contains(type))
             return CellEditor.AgCheckboxCellEditor;
-        }
 
-        if (type == typeof(DateTime) ||
-            type == typeof(DateOnly) ||
-            type == typeof(DateTimeOffset))
-        {
+        if (DateTypes.Contains(type))
             return CellEditor.AgDateStringCellEditor;
-        }
 
         return string.Empty;
     }
 
-    internal static bool IsNullableType(Type type) 
-        => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+    internal static bool IsNullableType(Type type)
+        => Nullable.GetUnderlyingType(type) != null;
 
     internal static string FirstToLower(this string text)
     {
@@ -74,5 +66,5 @@ internal static class Helper
 
         return char.ToLower(text[0]) + text[1..];
     }
-
 }
+
