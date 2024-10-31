@@ -156,8 +156,9 @@ Contributions are welcome! especially front-end developers, to improve the custo
  - Include the css/js files inside the Nuget package.
  - Remove Jquery dependency. ✅
  - Add integration tests for the js functionality.
- - Extend Gridazor options with AgGrid options.
- - Introduce more events.
- - Show validation error when the cell is required.
+ - Extend Gridazor options with AgGrid options.✅
+ - Introduce more events.✅
+ - Show validation error when the cell is required.✅
  - Support Backend Validation.
  - Support search using Ajax with GridazorDropdown.
+ - Support Localization.
