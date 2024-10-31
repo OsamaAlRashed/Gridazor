@@ -161,4 +161,4 @@ Contributions are welcome! especially front-end developers, to improve the custo
  - Show validation error when the cell is required.✅
  - Support Backend Validation.
  - Support search using Ajax with GridazorDropdown.
- - Support Localization.
+ - Support Localization.✅
