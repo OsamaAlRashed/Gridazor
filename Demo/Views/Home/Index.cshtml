@@ -43,6 +43,7 @@
                     headerName: '@viewLocalizer["Category"]',
                     cellEditor: GridazorDropdown,
                     cellEditorParams: {
+                        searchUrl: "Home/GetCategories",
                         values: categories.map(item => ({
                             value: item.id,
                             text: item.name

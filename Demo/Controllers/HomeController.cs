@@ -83,6 +83,22 @@ public class HomeController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
+    public IActionResult GetCategories(string search)
+    {
+        var cats = new List<SelectDto>()
+        {
+            new(1, "Category 1"),
+            new(2, "Category 2"),
+        };
+
+        return Json(cats.Where(x => string.IsNullOrEmpty(search) || x.Name.Contains(search)).Select(x =>
+            new {
+                text = x.Name,
+                value = x.Id
+            }));
+    }
+
     private static async Task UploadFile(Product item)
     {
         if (item.Image?.File != null && item.Image.File.Length > 0)

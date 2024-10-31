@@ -10,6 +10,7 @@
     init(params) {
         this.options = params.values || [];
         this.selectedValue = params.value;
+        this.searchUrl = params.searchUrl;
 
         // Create the GUI container
         this.eGui = document.createElement('div');
@@ -31,6 +32,7 @@
         this.renderDropdown(this.options);
 
         // Input event listener for searching
+        console.log(this.eInput.value)
         this.eInput.addEventListener('input', () => this.filterOptions(this.eInput.value));
         this.eInput.addEventListener('focus', () => this.showDropdown());
 
@@ -86,8 +88,27 @@
     }
 
     filterOptions(query) {
-        const filteredOptions = this.options.filter(option => option.text.toLowerCase().includes(query.toLowerCase()));
-        this.renderDropdown(filteredOptions);
+        const localFilteredOptions = this.options.filter(option =>
+            option.text.toLowerCase().includes(query.toLowerCase())
+        );
+
+        if (localFilteredOptions.length > 0 || !this.searchUrl) {
+            this.renderDropdown(localFilteredOptions);
+        } else {
+            this.fetchOptions(query)
+                .then(filteredOptions => this.renderDropdown(filteredOptions))
+                .catch(error => console.error('Error fetching options:', error));
+        }
+    }
+
+    fetchOptions(query) {
+        const url = `${this.searchUrl}?search=${encodeURIComponent(query)}`;
+
+        return fetch(url)
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            });
     }
 
     getTextByValue(value) {
@@ -98,6 +119,7 @@
 
 var gridazorDropdownHelper = {
     valueFormatter: function (params) {
+        console.log(params)
         const option = params.colDef.cellEditorParams.values
             .find(opt => opt.value === params.value);
 

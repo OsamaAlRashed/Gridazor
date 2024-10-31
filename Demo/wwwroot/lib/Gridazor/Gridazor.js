@@ -233,7 +233,7 @@
     }
 
     addRowChangedListener() {
-        document.addEventListener('rowsChanged', (e) => {
+        document.addEventListener('rowsAfterChanging', (e) => {
             const newData = e.detail;
             const container = document.getElementById(`data-${this.settings.propertyName}`);
             container.innerHTML = '';
