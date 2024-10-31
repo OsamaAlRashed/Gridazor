@@ -6,7 +6,6 @@
 
         this.settings = {
             propertyName: "",
-            enableRtl: false,
             overrideColumnDefs: [],
             enableDelete: true,
             deleteButtonId: "",
@@ -114,10 +113,13 @@
             }
         };
 
-        return {
+        var options = {
             ...defaultGridOptions,
-            ...this.settings.gridOptions
+            ...this.settings
         };
+        console.log(options)
+
+        return options;
     }
 
     addRow() {

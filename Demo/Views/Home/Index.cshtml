@@ -1,5 +1,11 @@
 ﻿@model IndexVM
 @using Gridazor;
+@inject IViewLocalizer viewLocalizer;
+@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+@{
+    string rtl = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft.ToString().ToLower();
+}
 
 <div class="card card-primary">
     @using (Html.BeginForm("Index", "Home", FormMethod.Post, new
@@ -27,11 +33,14 @@
         const categories = @Html.Raw(Json.Serialize(ViewBag.Cats));
         const qualityList = @Html.Raw(Json.Serialize(ViewBag.QualityList));
         const gridElement = document.querySelector('#myGrid');
+        console.log('@rtl')
         const gridazor = new Gridazor(gridElement, {
-            propertyName: '@nameof(Model.Products)', 
+            propertyName: '@nameof(Model.Products)',
+            enableRtl: '@rtl',
             overrideColumnDefs: [
                 {
                     field: "catId",
+                    headerName: '@viewLocalizer["Category"]',
                     cellEditor: GridazorDropdown,
                     cellEditorParams: {
                         values: categories.map(item => ({

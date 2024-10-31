@@ -28,6 +28,13 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li>
+                            @{
+                                var URL = Context.Request.Path + Context.Request.QueryString;
+                            }
+                            <a href="@Url.Action("SetLanguage","Culture",new{ returnUrl= URL, culture="en"})" class="dropdown-item">English</a>
+                            <a href="@Url.Action("SetLanguage","Culture",new{ returnUrl= URL, culture="ar"})" class="dropdown-item">العربية</a>
+                        </li>
                     </ul>
                 </div>
             </div>
