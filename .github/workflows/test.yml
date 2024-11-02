@@ -1,0 +1,29 @@
+name: .NET Test Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - '**' # Runs on all branches
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x' # Adjust if using a different .NET version
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Run tests
+        run: dotnet Gridazor.Tests --no-build --verbosity normal

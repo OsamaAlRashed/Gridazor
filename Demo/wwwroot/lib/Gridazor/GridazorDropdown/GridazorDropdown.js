@@ -32,7 +32,6 @@
         this.renderDropdown(this.options);
 
         // Input event listener for searching
-        console.log(this.eInput.value)
         this.eInput.addEventListener('input', () => this.filterOptions(this.eInput.value));
         this.eInput.addEventListener('focus', () => this.showDropdown());
 
@@ -119,7 +118,6 @@
 
 var gridazorDropdownHelper = {
     valueFormatter: function (params) {
-        console.log(params)
         const option = params.colDef.cellEditorParams.values
             .find(opt => opt.value === params.value);
 
