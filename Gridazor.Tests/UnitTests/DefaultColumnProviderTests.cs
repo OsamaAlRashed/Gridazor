@@ -16,7 +16,7 @@ public class DefaultColumnProviderTests
         [Required(true)]
         [Hide]
         [RowSelection]
-        public string TestProperty { get; set; }
+        public required string TestProperty { get; set; }
 
         public int AnotherProperty { get; set; }
 
@@ -43,7 +43,7 @@ public class DefaultColumnProviderTests
 
         var firstColumn = columns.FirstOrDefault(c => c.Field == "customField");
         firstColumn.Should().NotBeNull();
-        firstColumn.HeaderName.Should().Be("Custom Header");
+        firstColumn!.HeaderName.Should().Be("Custom Header");
         firstColumn.Field.Should().Be("customField");
         firstColumn.Editable.Should().BeFalse();
         firstColumn.CellDataType.Should().Be("string");
@@ -54,7 +54,7 @@ public class DefaultColumnProviderTests
 
         var secondColumn = columns.FirstOrDefault(c => c.Field == "anotherProperty");
         secondColumn.Should().NotBeNull();
-        secondColumn.HeaderName.Should().Be("AnotherProperty");
+        secondColumn!.HeaderName.Should().Be("AnotherProperty");
         secondColumn.Field.Should().Be("anotherProperty");
         secondColumn.Editable.Should().BeTrue();
         secondColumn.CellDataType.Should().Be("number");
@@ -65,11 +65,11 @@ public class DefaultColumnProviderTests
 
         var thirdColumn = columns.FirstOrDefault(c => c.Field == "dateProperty");
         thirdColumn.Should().NotBeNull();
-        thirdColumn.HeaderName.Should().Be("DateProperty");
+        thirdColumn!.HeaderName.Should().Be("DateProperty");
         thirdColumn.Field.Should().Be("dateProperty");
         thirdColumn.Editable.Should().BeTrue();
         thirdColumn.CellDataType.Should().Be("dateString");
-        thirdColumn.CellEditor.Should().BeEmpty();
+        thirdColumn.CellEditor.Should().Be("agDateStringCellEditor");
         thirdColumn.Required.Should().BeTrue();
         thirdColumn.Hide.Should().BeFalse();
         thirdColumn.IsRowSelectable.Should().BeFalse();

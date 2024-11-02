@@ -135,13 +135,13 @@ public class GridEditorForTests
 
     public class TestModel
     {
-        public IEnumerable<TestItem> Items { get; set; }
-        public string NonEnumerableProperty { get; set; }
+        public required IEnumerable<TestItem> Items { get; set; }
+        public string NonEnumerableProperty { get; set; } = null!;
     }
 
     public class TestItem
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public int Value { get; set; }
     }
 }
