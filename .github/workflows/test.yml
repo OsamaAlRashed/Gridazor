@@ -26,4 +26,4 @@ jobs:
         run: dotnet build --no-restore
 
       - name: Run tests
-        run: dotnet Gridazor.Tests --no-build --verbosity normal
+        run: dotnet test Gridazor.Tests --no-build --verbosity normal
