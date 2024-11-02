@@ -17,7 +17,7 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.x' # Adjust if using a different .NET version
+          dotnet-version: '8.x'
 
       - name: Restore dependencies
         run: dotnet restore
@@ -27,3 +27,14 @@ jobs:
 
       - name: Run tests
         run: dotnet test Gridazor.Tests/Gridazor.Tests.csproj --no-build --verbosity normal
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install JavaScript dependencies
+        run: npm install
+
+      - name: Run JavaScript tests
+        run: npm test
