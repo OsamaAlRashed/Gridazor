@@ -33,6 +33,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Navigate to JavaScript project directory
+        run: cd Gridazor.Tests/ClientSideTests
+
       - name: Install JavaScript dependencies
         run: npm install
 
