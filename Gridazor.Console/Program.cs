@@ -1,1 +1,1 @@
-﻿
+﻿Console.WriteLine("Playground Project");
