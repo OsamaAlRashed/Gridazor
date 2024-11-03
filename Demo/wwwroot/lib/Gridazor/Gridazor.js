@@ -92,7 +92,8 @@
                 this.updateCell(e);
             },
             pinnedTopRowData: [this.inputRow],
-            getRowStyle: ({ node }) => node.rowPinned ? { 'font-weight': 'bold', 'font-style': 'italic' } : null,
+            getRowStyle: ({ node }) =>
+                node.rowPinned ? { 'font-weight': 'bold', 'font-style': 'italic', backgroundColor: '#EFEEEE' } : null,
             defaultColDef: {
                 flex: 1,
                 editable: true,

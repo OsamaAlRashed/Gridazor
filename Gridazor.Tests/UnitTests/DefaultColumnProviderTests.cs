@@ -77,7 +77,7 @@ public class DefaultColumnProviderTests
     }
 
     [Fact]
-    public void Get_ShouldReturnColumnWithDefaultValues()
+    public void Get_ShouldReturnColumnWithDefaultValues() 
     {
         // Arrange
         var provider = DefaultColumnProvider.Instance;
