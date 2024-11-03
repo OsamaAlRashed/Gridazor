@@ -1,6 +1,8 @@
 ﻿using Gridazor.Abstractions;
 using Gridazor.Core;
 using Gridazor.Models;
+using Gridazor.Settings;
+using Gridazor.Statics;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -8,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.Json;
-using static Gridazor.Statics.Constants;
 
 namespace Gridazor;
 
@@ -32,17 +33,16 @@ public static class GridazorExtensions
     /// <param name="gridId">The unique identifier for the grid.</param>
     /// <param name="agGridTheme">The AG Grid theme to apply.</param>
     /// <returns>Returns the generated HTML content for the grid editor.</returns>
-
     public static IHtmlContent GridEditorFor<TModel, TResult>(
         this IHtmlHelper<TModel> htmlHelper,
         Expression<Func<TModel, TResult>> expression,
         string gridId,
         string agGridTheme)
         where TResult : class 
-            => GridEditorFor(htmlHelper, expression, gridId, agGridTheme, null);
+            => GridEditorFor(htmlHelper, expression, gridId, agGridTheme, null, new Dictionary<string, Func<Column, object>>());
 
     /// <summary>
-    /// Generates an HTML grid editor for the specified model property, with an optional custom column provider.
+    /// Generates an HTML grid editor for the specified model property.
     /// </summary>
     /// <typeparam name="TModel">The model type.</typeparam>
     /// <typeparam name="TResult">The result type, which must be a class.</typeparam>
@@ -50,14 +50,44 @@ public static class GridazorExtensions
     /// <param name="expression">The expression representing the model property.</param>
     /// <param name="gridId">The unique identifier for the grid.</param>
     /// <param name="agGridTheme">The AG Grid theme to apply.</param>
-    /// <param name="customColumnsProvider">An optional custom column provider.</param>
+    /// <param name="customColumnsProvider">Custom Columns Provider</param>
     /// <returns>Returns the generated HTML content for the grid editor.</returns>
     public static IHtmlContent GridEditorFor<TModel, TResult>(
         this IHtmlHelper<TModel> htmlHelper,
         Expression<Func<TModel, TResult>> expression,
-        string gridId, 
+        string gridId,
         string agGridTheme,
         IColumnsProvider? customColumnsProvider)
+        where TResult : class
+            => GridEditorFor(htmlHelper, expression, gridId, agGridTheme, customColumnsProvider, new Dictionary<string, Func<Column, object>>());
+
+    /// <summary>
+    /// Generates an HTML grid editor for the specified model property.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <typeparam name="TResult">The result type, which must be a class.</typeparam>
+    /// <param name="htmlHelper">The HTML helper instance.</param>
+    /// <param name="expression">The expression representing the model property.</param>
+    /// <param name="gridId">The unique identifier for the grid.</param>
+    /// <param name="agGridTheme">The AG Grid theme to apply.</param>
+    /// <param name="overrideColumnMetadataValues">Dictionary that contaians the metadata</param>
+    /// <returns>Returns the generated HTML content for the grid editor.</returns>
+    public static IHtmlContent GridEditorFor<TModel, TResult>(
+        this IHtmlHelper<TModel> htmlHelper,
+        Expression<Func<TModel, TResult>> expression,
+        string gridId,
+        string agGridTheme,
+        Dictionary<string, Func<Column, object>> overrideColumnMetadataValues)
+        where TResult : class
+            => GridEditorFor(htmlHelper, expression, gridId, agGridTheme, null, overrideColumnMetadataValues);
+
+    private static IHtmlContent GridEditorFor<TModel, TResult>(
+        this IHtmlHelper<TModel> htmlHelper,
+        Expression<Func<TModel, TResult>> expression,
+        string gridId, 
+        string agGridTheme,
+        IColumnsProvider? customColumnsProvider,
+        Dictionary<string, Func<Column, object>> overrideColumnMetadataValues)
         where TResult : class
     {
         ArgumentNullException.ThrowIfNull(nameof(expression));
@@ -85,7 +115,7 @@ public static class GridazorExtensions
         }
 
         var columnsProvider = customColumnsProvider ?? DefaultColumnProvider.Instance;
-        var columns = columnsProvider.Get(propertyType);
+        var columns = columnsProvider.Get(propertyType, overrideColumnMetadataValues);
 
         var htmlGenerator = HtmlGenerator.Instance;
         var htmlString = htmlGenerator.Generate(

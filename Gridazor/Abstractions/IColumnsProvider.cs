@@ -14,6 +14,7 @@ public interface IColumnsProvider
     /// Gets a list of metadata for the columns based on the provided type.
     /// </summary>
     /// <param name="type">The enumerable type.</param>
+    /// <param name="overrideColumnMetadataValues">override columns</param>
     /// <returns>A list of columns containing metadata.</returns>
-    public IEnumerable<Column> Get(Type type);
+    public IEnumerable<Column> Get(Type type, Dictionary<string, Func<Column, object>> overrideColumnMetadataValues);
 }

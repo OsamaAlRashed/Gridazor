@@ -39,7 +39,7 @@ public class GridEditorForTests
         Expression<Func<TestModel, IEnumerable<TestItem>>> expression = model => model.Items;
 
         var expectedPropertyName = nameof(TestModel.Items);
-        var expectedColumnDefsJson = JsonSerializer.Serialize(DefaultColumnProvider.Instance.Get(typeof(TestItem)), _jsonOptions);
+        var expectedColumnDefsJson = JsonSerializer.Serialize(DefaultColumnProvider.Instance.Get(typeof(TestItem), []), _jsonOptions);
         var expectedJsonData = JsonSerializer.Serialize(viewData.Model.Items, _jsonOptions);
 
         // Act
@@ -67,7 +67,7 @@ public class GridEditorForTests
         };
         htmlHelperMock.SetupGet(x => x.ViewData).Returns(viewData);
         var expectedPropertyName = nameof(TestModel.Items);
-        var expectedColumnDefsJson = JsonSerializer.Serialize(DefaultColumnProvider.Instance.Get(typeof(TestItem)), _jsonOptions);
+        var expectedColumnDefsJson = JsonSerializer.Serialize(DefaultColumnProvider.Instance.Get(typeof(TestItem), []), _jsonOptions);
         var expectedJsonData = JsonSerializer.Serialize(viewData.Model.Items, _jsonOptions);
 
         // Act

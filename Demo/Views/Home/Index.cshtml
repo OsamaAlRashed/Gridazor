@@ -2,6 +2,8 @@
 @using Gridazor;
 @inject IViewLocalizer viewLocalizer;
 @using System.Globalization
+@using Gridazor.Attributes
+@using Gridazor.Settings
 @using Microsoft.AspNetCore.Mvc.Localization
 @{
     string rtl = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft.ToString().ToLower();
@@ -18,7 +20,10 @@
             <button id="delete-button" type="button" class="btn btn-danger">Delete</button>
         </div>
         <div class="card-body">
-            @Html.GridEditorFor(x => x.Products, "myGrid", "ag-theme-quartz")
+            @Html.GridEditorFor(x => x.Products, "myGrid", "ag-theme-quartz", new Dictionary<string, Func<Column, object>>()
+            {
+                { nameof(HeaderNameAttribute), (column) => viewLocalizer[column.HeaderName].Value },
+            })
         </div>
         <div class="card-footer">
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -36,11 +41,16 @@
         console.log('@rtl')
         const gridazor = new Gridazor(gridElement, {
             propertyName: '@nameof(Model.Products)',
+            localeText: '@rtl' == 'true' ? {
+                pageSizeSelectorLabel: 'حجم الصفحة:',
+                page: 'الصفحة',
+                to: 'إلى',
+                of: 'من'
+            } : {},
             enableRtl: '@rtl',
             overrideColumnDefs: [
                 {
                     field: "catId",
-                    headerName: '@viewLocalizer["Category"]',
                     cellEditor: GridazorDropdown,
                     cellEditorParams: {
                         searchUrl: "Home/GetCategories",

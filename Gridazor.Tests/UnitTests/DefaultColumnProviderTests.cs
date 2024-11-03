@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Gridazor.Attributes;
 using Gridazor.Core;
+using Gridazor.Settings;
 
 namespace Gridazor.Tests.UnitTests;
 
@@ -36,7 +37,7 @@ public class DefaultColumnProviderTests
         var type = typeof(TestClass);
 
         // Act
-        var columns = provider.Get(type).ToList();
+        var columns = provider.Get(type, []).ToList();
 
         // Assert
         columns.Should().HaveCount(3);
@@ -83,7 +84,7 @@ public class DefaultColumnProviderTests
         var type = typeof(DefaultClass);
 
         // Act
-        var columns = provider.Get(type).ToList();
+        var columns = provider.Get(type, []).ToList();
 
         // Assert
         columns.Should().HaveCount(1);
@@ -97,6 +98,42 @@ public class DefaultColumnProviderTests
         column.Required.Should().BeFalse();
         column.Hide.Should().BeFalse();
         column.IsRowSelectable.Should().BeFalse();
+    }
+
+    [Fact]
+    public void GetWithOverrideMetadataValues_ShouldReturnColumnWithDefaultValues()
+    {
+        // Arrange
+        var provider = DefaultColumnProvider.Instance;
+        var type = typeof(DefaultClass);
+
+        var dic = new Dictionary<string, Func<Column, object>>
+        {
+            { nameof(CellDataTypeAttribute), (column) => "Custom_" + column.CellDataType },
+            { nameof(CellEditorAttribute), (column) => "Custom_" + column.CellEditor },
+            { nameof(EditableAttribute), (column) => !column.Editable },
+            { nameof(FieldAttribute), (column) =>  "Custom_" + column.Field },
+            { nameof(HeaderNameAttribute), (column) => "Custom_" + column.HeaderName },
+            { nameof(HideAttribute), (column) => !column.Hide },
+            { nameof(RequiredAttribute), (column) => !column.Required },
+            { nameof(RowSelectionAttribute), (column) => !column.IsRowSelectable },
+        };
+
+        // Act
+        var columns = provider.Get(type, dic).ToList();
+
+        // Assert
+        columns.Should().HaveCount(1);
+
+        var column = columns.First();
+        column.CellDataType.Should().Be("Custom_text");
+        column.CellEditor.Should().Be("Custom_");
+        column.Editable.Should().BeFalse();
+        column.Field.Should().Be("Custom_defaultProperty");
+        column.HeaderName.Should().Be("Custom_DefaultProperty");
+        column.Hide.Should().BeTrue();
+        column.Required.Should().BeTrue();
+        column.IsRowSelectable.Should().BeTrue();
     }
 }
 

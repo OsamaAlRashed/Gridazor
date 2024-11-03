@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using static Gridazor.Statics.Constants;
 
 namespace Gridazor.Statics;
 

@@ -1,5 +1,6 @@
 ﻿using Gridazor.Attributes;
 using Gridazor.Models;
+using Gridazor.Statics;
 
 namespace Gridazor.Demo.Models;
 
@@ -7,7 +8,7 @@ public class Product
 {
     [Editable(false)]
     [Hide]
-    [Required(false)] // auto generated
+    [Required(false)]
     public Guid Id { get; set; } = Guid.NewGuid();
 
     [RowSelection]
@@ -19,14 +20,13 @@ public class Product
     public DateOnly Date { get; set; }
     public DateTime DateTime { get; set; }
 
-    [CellEditor("agLargeTextCellEditor")]
+    [CellEditor(CellEditor.AgLargeTextCellEditor)]
     public string? Description { get; set; }
 
     [HeaderName("Category")]
     public int CatId { get; set; }
 
     [Required(true)]
-    [HeaderName("Image")]
     public FileInput? Image { get; set; }
     public double Price { get; set; }
     public int Quantity { get; set; }
