@@ -162,3 +162,6 @@ Contributions are welcome! especially front-end developers, to improve the custo
  - Support Backend Validation.
  - Support search using Ajax with GridazorDropdown.
  - Support Localization.✅
+ - Support multiple files input.
+ - Support multi select in GridazorDropdown.
+ - Support async Search in GridazorDropdown.
