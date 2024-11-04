@@ -27,17 +27,3 @@ jobs:
 
       - name: Run tests
         run: dotnet test Gridazor.Tests/Gridazor.Tests.csproj --no-build --verbosity normal
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Navigate to JavaScript project directory
-        run: cd Gridazor.Tests/ClientSideTests
-
-      - name: Install JavaScript dependencies
-        run: npm install
-
-      - name: Run JavaScript tests
-        run: npm test

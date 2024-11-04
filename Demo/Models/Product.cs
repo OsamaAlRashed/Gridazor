@@ -26,6 +26,9 @@ public class Product
     [HeaderName("Category")]
     public int CatId { get; set; }
 
+    [HeaderName("Sub Category")]
+    public int SubCatId { get; set; }
+
     [Required(true)]
     public FileInput? Image { get; set; }
     public double Price { get; set; }

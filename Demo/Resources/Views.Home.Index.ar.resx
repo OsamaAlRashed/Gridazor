@@ -147,4 +147,7 @@
   <data name="Selected" xml:space="preserve">
     <value>مختارة</value>
   </data>
+  <data name="Sub Category" xml:space="preserve">
+    <value>التصنيف الفرعي</value>
+  </data>
 </root>

@@ -15,6 +15,7 @@ public class HomeController : Controller
             Name = "Name 1",
             Description = "Description 1",
             CatId = 2,
+            SubCatId = 3,
             Image = new FileInput()
             {
                 Name = "Image 1",
@@ -33,6 +34,7 @@ public class HomeController : Controller
             Name = "Name 2",
             Description = "Description 2",
             CatId = 1,
+            SubCatId = 2,
             Image = new FileInput()
             {
                 Name = "Image 2",
@@ -98,6 +100,28 @@ public class HomeController : Controller
                 value = x.Id
             }));
     }
+
+    [HttpGet]
+    public IActionResult GetSubCategories(string search, List<int> categoryIds)
+    {
+        var subCats = new List<SubCategory>()
+        {
+            new(1, "Sub Cat 1-1", 1),
+            new(2, "Sub Cat 1-2", 1),
+            new(3, "Sub Cat 2-1", 2),
+            new(4, "Sub Cat 2-2", 2),
+        };
+
+        return Json(subCats.Where(x => string.IsNullOrEmpty(search) || x.Name.Contains(search))
+            .Where(x => categoryIds.Contains(x.CatId))
+            .Select(x =>
+                new {
+                    text = x.Name,
+                    value = x.Id
+                }));
+    }
+
+    record SubCategory(int Id, string Name, int CatId);
 
     private static async Task UploadFile(Product item)
     {

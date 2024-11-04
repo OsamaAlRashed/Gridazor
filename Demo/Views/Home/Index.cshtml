@@ -33,12 +33,10 @@
 
 
 @section Scripts{
-    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
     <script>
         const categories = @Html.Raw(Json.Serialize(ViewBag.Cats));
         const qualityList = @Html.Raw(Json.Serialize(ViewBag.QualityList));
         const gridElement = document.querySelector('#myGrid');
-        console.log('@rtl')
         const gridazor = new Gridazor(gridElement, {
             propertyName: '@nameof(Model.Products)',
             localeText: '@rtl' == 'true' ? {
@@ -53,11 +51,18 @@
                     field: "catId",
                     cellEditor: GridazorDropdown,
                     cellEditorParams: {
-                        searchUrl: "Home/GetCategories",
                         values: categories.map(item => ({
                             value: item.id,
                             text: item.name
                         }))
+                    },
+                    valueFormatter: (params) => gridazorDropdownHelper.valueFormatter(params)
+                },
+                {
+                    field: "subCatId",
+                    cellEditor: GridazorDropdown,
+                    cellEditorParams: {
+                        values: [],
                     },
                     valueFormatter: (params) => gridazorDropdownHelper.valueFormatter(params)
                 },
@@ -79,6 +84,9 @@
                 {
                     field: "image",
                     cellEditor: GridazorFileInput,
+                    cellEditorParams:{
+
+                    },
                     cellRenderer: (params) => gridazorFileInputHelper.cellRender(params)
                 },
                 {
