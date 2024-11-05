@@ -10,14 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ClientSideTests\src\Gridazor.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="ClientSideTests\src\Gridazor.js">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
+    <Compile Remove="ClientSideTests\**" />
+    <EmbeddedResource Remove="ClientSideTests\**" />
+    <None Remove="ClientSideTests\**" />
   </ItemGroup>
 
   <ItemGroup>
