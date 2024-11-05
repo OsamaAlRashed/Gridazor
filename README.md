@@ -153,7 +153,6 @@ Contributions are welcome! especially front-end developers, to improve the custo
  - Improve the style of the custom inputs.
  - Improve the rendering of the html elements.
  - Fix the override columns functionality. ✅
- - Include the css/js files inside the Nuget package.
  - Remove Jquery dependency. ✅
  - Add integration tests for the js functionality.
  - Extend Gridazor options with AgGrid options.✅
