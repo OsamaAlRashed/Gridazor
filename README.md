@@ -91,12 +91,14 @@ And Gridazor client-side:
 ```js
 @section Scripts{
     <script>
+         const gridElement = document.querySelector('#myGrid');
          const gridazor = new Gridazor(gridElement, {
             propertyName: '@nameof(Model.Products)',
             enableDelete: true,
             deleteButtonId: "delete-button",
             addByButton: true,
             addButtonId: "add-button"
+         });
     </script>
 }
 ```
@@ -124,7 +126,6 @@ Contributions are welcome! especially front-end developers, to improve the custo
  - Extend Gridazor options with AgGrid options.✅
  - Introduce more events.✅
  - Show validation error when the cell is required.✅
- - Support Backend Validation.
  - Support search using Ajax with GridazorDropdown.
  - Support Localization.✅
  - Support multiple files input.
