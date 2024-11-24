@@ -47,37 +47,20 @@ public class Product
 
     [CellEditor("agLargeTextCellEditor")]
     public string? Description { get; set; }
-
-    [HeaderName("Category")]
-    public int CatId { get; set; }
-
-    [Required(true)]
-    [HeaderName("Image")]
-    public FileInput? Image { get; set; }
-}
-
-public class FileInput : IFileInput
-{
-    public IFormFile? File { get; set; }
-    public string? Name { get; set; }
-    public string? Path { get; set; }
 }
 ```
 
 ### Example Razor View
 
-- Download the required js/css files from here:  
-[Gridazor.zip](https://github.com/user-attachments/files/17090694/Gridazor.zip)
-
-- Import them in Layout.cshtml:
+- Import ag-grid library:
 ```csharp
-<link rel="stylesheet" href="~/lib/Gridazor/GridazorDropdown/GridazorDropdown.css" />
-<link rel="stylesheet" href="~/lib/Gridazor/GridazorFileInput/GridazorFileInput.css" />
-
 <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
-<script src="~/lib/Gridazor/GridazorDropdown/GridazorDropdown.js"></script>
-<script src="~/lib/Gridazor/GridazorFileInput/GridazorFileInput.js"></script>
-<script src="~/lib/Gridazor/Gridazor.js"></script>
+```
+
+And Gridazor client-side:
+```csharp
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridazor@latest/dist/gridazor.css" />
+<script src="https://cdn.jsdelivr.net/npm/gridazor@latest/dist/gridazor.js"></script>
 ```
 
 ```csharp
@@ -91,6 +74,7 @@ public class FileInput : IFileInput
     }))
     {
         <div class="card-header">
+            <button id="add-button" type="button" class="btn btn-primary">Add</button>
             <button id="delete-button" type="button" class="btn btn-danger">Delete</button>
         </div>
         <div class="card-body">
@@ -107,30 +91,14 @@ public class FileInput : IFileInput
 ```js
 @section Scripts{
     <script>
-        const dropdownValues = @Html.Raw(Json.Serialize(ViewBag.Cats));
-        $("#myGrid").gridazor({
+         const gridElement = document.querySelector('#myGrid');
+         const gridazor = new Gridazor(gridElement, {
             propertyName: '@nameof(Model.Products)',
-            overrideColumnDefs: [
-                {
-                    field: "catId",
-                    cellEditor: GridazorDropdown,
-                    cellEditorParams: {
-                        values: dropdownValues.map(item => ({
-                            value: item.id,
-                            text: item.name
-                        }))
-                    },
-                    valueFormatter: (params) => gridazorDropdownHelper.valueFormatter(params)
-                },
-                {
-                    field: "image",
-                    cellEditor: GridazorFileInput,
-                    cellRenderer: (params) => gridazorFileInputHelper.cellRender(params)
-                }
-            ],
             enableDelete: true,
-            deleteButtonId: "delete-button"
-        });
+            deleteButtonId: "delete-button",
+            addByButton: true,
+            addButtonId: "add-button"
+         });
     </script>
 }
 ```
@@ -153,13 +121,11 @@ Contributions are welcome! especially front-end developers, to improve the custo
  - Improve the style of the custom inputs.
  - Improve the rendering of the html elements.
  - Fix the override columns functionality. ✅
- - Include the css/js files inside the Nuget package.
  - Remove Jquery dependency. ✅
  - Add integration tests for the js functionality.
  - Extend Gridazor options with AgGrid options.✅
  - Introduce more events.✅
  - Show validation error when the cell is required.✅
- - Support Backend Validation.
  - Support search using Ajax with GridazorDropdown.
  - Support Localization.✅
  - Support multiple files input.
