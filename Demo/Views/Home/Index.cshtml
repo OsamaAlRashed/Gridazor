@@ -34,8 +34,9 @@
 
 @section Scripts{
     <script>
-        const categories = @Html.Raw(Json.Serialize(ViewBag.Cats));
-        const qualityList = @Html.Raw(Json.Serialize(ViewBag.QualityList));
+        const categories = @Html.Raw(Json.Serialize(ViewBag.Cats))
+        const subCategories = @Html.Raw(Json.Serialize(ViewBag.SubCategories))
+        const qualityList = @Html.Raw(Json.Serialize(ViewBag.QualityList))
         const gridElement = document.querySelector('#myGrid');
         const gridazor = new Gridazor(gridElement, {
             propertyName: '@nameof(Model.Products)',
@@ -61,8 +62,14 @@
                 {
                     field: "subCatId",
                     cellEditor: GridazorDropdown,
-                    cellEditorParams: {
-                        values: [],
+                    cellEditorParams: params => {
+                        return {
+                            searchUrl: "Home/GetSubCategories?categoryId=" + params.data.catId,
+                            values: subCategories.map(item => ({
+                                value: item.id,
+                                text: item.name
+                            })) // for the first load
+                        };
                     },
                     valueFormatter: (params) => gridazorDropdownHelper.valueFormatter(params)
                 },
@@ -113,23 +120,18 @@
         });
 
         document.addEventListener('rowsAfterChanging', function (e) {
-            console.log('rowsAfterChanging', e)
         });
 
         document.addEventListener('rowUpdated', function (e) {
-            console.log('rowUpdated', e)
         });
 
         document.addEventListener('rowAdded', function (e) {
-            console.log('rowAdded', e)
         });
 
         document.addEventListener('rowDeleted', function (e) {
-            console.log('rowDeleted', e)
         });
 
         document.addEventListener('gridazorCellValueChanged', function (e) {
-            console.log('gridazorCellValueChanged', e)
         });
     </script>
 }
