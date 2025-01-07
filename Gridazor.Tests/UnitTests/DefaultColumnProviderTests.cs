@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Gridazor.Attributes;
 using Gridazor.Core;
-using Gridazor.Settings;
+using Gridazor.Models;
 
 namespace Gridazor.Tests.UnitTests;
 

@@ -1,5 +1,5 @@
-﻿using Gridazor.Attributes;
-using Gridazor.Models;
+﻿using Gridazor.Abstractions;
+using Gridazor.Attributes;
 using Gridazor.Statics;
 
 namespace Gridazor.Demo.Models;

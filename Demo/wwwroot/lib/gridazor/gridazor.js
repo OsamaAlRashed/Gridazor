@@ -206,7 +206,6 @@
         return Array.from(columnMap.values());
     }
 
-
     dispatchRowsAfterChangingEvent() {
         const event = new CustomEvent('rowsAfterChanging', { detail: this.getAllRows() });
         document.dispatchEvent(event);
@@ -447,7 +446,6 @@ class GridazorDropdown {
     }
 }
 
-
 // Helpers
 var gridazorDateInputHelper = {
     valueGetter: function (p) {
@@ -471,8 +469,14 @@ var gridazorFileInputHelper = {
     }
 };
 
+/// Todo
 var gridazorDropdownHelper = {
     valueFormatter: function (params) {
+        //if (typeof params.colDef.cellEditorParams === 'function') {
+        //    console.log(params.colDef.cellEditorParams)
+        //    return 1;
+        //}
+        
         const option = params.colDef.cellEditorParams.values
             .find(opt => opt.value === params.value);
 

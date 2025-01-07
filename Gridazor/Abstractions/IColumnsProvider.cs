@@ -1,4 +1,4 @@
-﻿using Gridazor.Settings;
+﻿using Gridazor.Models;
 using System;
 using System.Collections.Generic;
 

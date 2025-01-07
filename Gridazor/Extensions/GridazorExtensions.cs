@@ -1,7 +1,6 @@
 ﻿using Gridazor.Abstractions;
 using Gridazor.Core;
 using Gridazor.Models;
-using Gridazor.Settings;
 using Gridazor.Statics;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;

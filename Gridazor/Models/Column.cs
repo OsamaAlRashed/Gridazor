@@ -2,7 +2,7 @@
 using System;
 using Gridazor.Abstractions;
 
-namespace Gridazor.Settings;
+namespace Gridazor.Models;
 
 /// <summary>
 /// Represents the metadata of a column obtained from <see cref="IColumnsProvider"/>.

@@ -125,21 +125,23 @@ public class HomeController : Controller
 
     private static async Task UploadFile(Product item)
     {
-        if (item.Image?.File != null && item.Image.File.Length > 0)
+        if (item.Image?.File == null || item.Image.File.Length == 0)
         {
-            var fileName = Path.GetFileName(item.Image.File.FileName);
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
-
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await item.Image.File.CopyToAsync(stream);
-            }
-
-            item.Image.Path = "images/" + fileName;
-            item.Image.Name = fileName;
+            return;
         }
+
+        var fileName = Path.GetFileName(item.Image.File.FileName);
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+
+        Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await item.Image.File.CopyToAsync(stream);
+        }
+
+        item.Image.Path = "images/" + fileName;
+        item.Image.Name = fileName;
     }
 
     public IActionResult Privacy()

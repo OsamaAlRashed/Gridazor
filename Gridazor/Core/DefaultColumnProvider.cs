@@ -1,6 +1,6 @@
 ﻿using Gridazor.Abstractions;
 using Gridazor.Attributes;
-using Gridazor.Settings;
+using Gridazor.Models;
 using System;
 using System.Collections.Generic;
 

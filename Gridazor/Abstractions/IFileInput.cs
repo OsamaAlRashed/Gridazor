@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Gridazor.Models;
-
+namespace Gridazor.Abstractions;
 
 /// <summary>
 /// Represents Gridazor File Input
