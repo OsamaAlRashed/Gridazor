@@ -1,0 +1,29 @@
+﻿@model List<Category>
+@using FakeDataStore.Shared.Models
+@using Gridazor;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="card card-primary">
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post))
+    {
+        <div class="card-body">
+            @Html.GridEditorFor(x => Model, "myGrid", "ag-theme-quartz")
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        const gridElement = document.querySelector('#myGrid');
+        const gridazor = new Gridazor(gridElement, {
+           propertyName: 'Model',
+           enableDelete: false
+        });
+    </script>
+}

@@ -1,4 +1,10 @@
-﻿.gridazor-select-wrapper {
+﻿﻿.red-border-cell {
+    border: 1px solid #e02525 !important;
+    border-radius: 4px !important;
+}
+
+
+.gridazor-select-wrapper {
     position: relative;
     width: 100%;
 }
@@ -13,11 +19,11 @@
     transition: border-color 0.3s ease;
 }
 
-.gridazor-select:focus {
-    border-color: #007bff;
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-}
+    .gridazor-select:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    }
 
 .gridazor-dropdown {
     position: absolute;

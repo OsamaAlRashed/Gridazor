@@ -61,12 +61,12 @@
 
     updateCellStyleIfRequired(columnDefs) {
         var cellClassProp = {
-            cellStyle: params => {
+            cellClass: params => {
                 if (params.value === undefined || params.value === null || params.value === '') {
-                    return { 'border': '1px solid #e02525', 'border-radius': '4px'};
+                    return 'red-border-cell';
                 }
 
-                return { };
+                return '';
             }
         }
 
@@ -93,13 +93,13 @@
             },
             pinnedTopRowData: [this.inputRow],
             getRowStyle: ({ node }) =>
-                node.rowPinned ? { 'font-weight': 'bold', 'font-style': 'italic' } : null,
+                node.rowPinned ? { 'font-weight': 'bold', 'font-style': 'italic', backgroundColor: '#EFEEEE' } : null,
             defaultColDef: {
                 flex: 1,
                 editable: true,
                 valueFormatter: (params) => this.isEmptyPinnedCell(params)
                     ? this.createPinnedCellPlaceholder(params)
-                    : undefined
+                    : undefined,
             },
             onCellEditingStopped: (params) => {
                 if (!this.settings.addByButton) {
@@ -156,12 +156,12 @@
         });
     }
 
-    isEmptyPinnedCell(params) {
-        return (params.node.rowPinned === 'top' && (params.value === null || params.value === '' || params.value === undefined));
+    isEmptyPinnedCell({ node, value }) {
+        return (node.rowPinned === 'top' && (value === null || value === ''));
     }
 
     createPinnedCellPlaceholder({ colDef }) {
-        return `Type here...`;
+        return `${colDef.headerName}...`;
     }
 
     isPinnedRowDataCompleted(rowPinned) {
@@ -205,6 +205,7 @@
 
         return Array.from(columnMap.values());
     }
+
 
     dispatchRowsAfterChangingEvent() {
         const event = new CustomEvent('rowsAfterChanging', { detail: this.getAllRows() });
@@ -446,6 +447,7 @@ class GridazorDropdown {
     }
 }
 
+
 // Helpers
 var gridazorDateInputHelper = {
     valueGetter: function (p) {
@@ -469,14 +471,9 @@ var gridazorFileInputHelper = {
     }
 };
 
-/// Todo
 var gridazorDropdownHelper = {
     valueFormatter: function (params) {
-        //if (typeof params.colDef.cellEditorParams === 'function') {
-        //    console.log(params.colDef.cellEditorParams)
-        //    return 1;
-        //}
-        
+        console.log(params)
         const option = params.colDef.cellEditorParams.values
             .find(opt => opt.value === params.value);
 
