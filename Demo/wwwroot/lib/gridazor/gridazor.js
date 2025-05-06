@@ -351,30 +351,26 @@ class GridazorDropdown {
         this.options = params.values || [];
         this.selectedValue = params.value;
         this.searchUrl = params.searchUrl;
+        this.params = params;
 
-        // Create container and input
         this.eGui = document.createElement('div');
         this.eGui.classList.add('gridazor-select-wrapper');
-
         this.eInput = document.createElement('input');
         this.eInput.classList.add('gridazor-select');
         this.eInput.value = this.getTextByValue(this.selectedValue);
         this.eGui.appendChild(this.eInput);
 
-        // Create dropdown
         this.eDropdown = document.createElement('div');
         this.eDropdown.classList.add('gridazor-dropdown');
         this.eDropdown.style.display = 'none';
         this.eGui.appendChild(this.eDropdown);
 
-        // Event listeners
         this.eInput.addEventListener('input', () => this.filterOptions(this.eInput.value));
         this.eInput.addEventListener('focus', () => this.showDropdown());
         document.addEventListener('click', (event) => {
             if (!this.eGui.contains(event.target)) this.hideDropdown();
         });
 
-        // Initial render
         this.renderDropdown(this.options);
     }
 
@@ -404,49 +400,67 @@ class GridazorDropdown {
 
     renderDropdown(options) {
         this.eDropdown.innerHTML = ''; // Clear dropdown content
+
+        if (options.length === 0) {
+            const noResultsElement = document.createElement('div');
+            noResultsElement.classList.add('gridazor-dropdown-item', 'no-results');
+            noResultsElement.textContent = 'No options available';
+            this.eDropdown.appendChild(noResultsElement);
+            return;
+        }
+
         options.forEach(option => {
             const optionElement = document.createElement('div');
             optionElement.classList.add('gridazor-dropdown-item');
             optionElement.textContent = option.text;
-
             if (option.value === this.selectedValue) {
                 optionElement.classList.add('selected');
             }
-
             optionElement.addEventListener('click', () => {
                 this.selectedValue = option.value;
                 this.eInput.value = option.text;
                 this.hideDropdown();
             });
-
             this.eDropdown.appendChild(optionElement);
         });
     }
 
     filterOptions(query) {
-        const localOptions = this.options.filter(option =>
-            option.text.toLowerCase().includes(query.toLowerCase())
-        );
-
-        if (localOptions.length || !this.searchUrl) {
-            this.renderDropdown(localOptions);
+        if (this.searchUrl) {
+            this.fetchOptions(query).then(filteredOptions => {
+                this.renderDropdown(filteredOptions);
+            });
         } else {
-            this.fetchOptions(query).then(filteredOptions => this.renderDropdown(filteredOptions));
+            const localOptions = this.options.filter(option =>
+                option.text.toLowerCase().includes(query.toLowerCase())
+            );
+            this.renderDropdown(localOptions);
         }
     }
 
     fetchOptions(query) {
-        return fetch(`${this.searchUrl}?search=${encodeURIComponent(query)}`)
+        let url = this.searchUrl;
+
+        if (query) {
+            url += url.includes('?') ? '&' : '?';
+            url += `search=${encodeURIComponent(query)}`;
+        }
+
+        return fetch(url)
             .then(response => response.ok ? response.json() : [])
-            .catch(error => console.error('Error fetching options:', error));
+            .catch(error => {
+                console.error('Error fetching options:', error);
+                return [];
+            });
     }
 
     getTextByValue(value) {
+        if (value === null || value === undefined) return '';
+
         const selectedOption = this.options.find(option => option.value === value);
-        return selectedOption ? selectedOption.text : '';
+        return selectedOption ? selectedOption.text : value.toString();
     }
 }
-
 
 // Helpers
 var gridazorDateInputHelper = {
@@ -471,12 +485,33 @@ var gridazorFileInputHelper = {
     }
 };
 
-var gridazorDropdownHelper = {
+const gridazorDropdownHelper = {
     valueFormatter: function (params) {
-        console.log(params)
-        const option = params.colDef.cellEditorParams.values
-            .find(opt => opt.value === params.value);
+        if (params.value === null || params.value === undefined) {
+            return '';
+        }
 
-        return option ? option.text : params.value;
+        const editorParams = typeof params.colDef.cellEditorParams === 'function'
+            ? params.colDef.cellEditorParams(params)
+            : params.colDef.cellEditorParams;
+
+        if (editorParams && Array.isArray(editorParams.values)) {
+            const option = editorParams.values.find(opt => opt.value === params.value);
+            if (option) {
+                return option.text;
+            }
+        }
+
+        return params.value.toString();
+    },
+    resetDependentValue: function (params, childField) {
+        if (params.oldValue !== params.newValue) {
+            params.data[childField] = null;
+            params.api.refreshCells({
+                rowNodes: [params.node],
+                columns: [childField],
+                force: true
+            });
+        }
     }
 };

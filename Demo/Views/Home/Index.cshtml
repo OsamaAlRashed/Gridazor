@@ -57,6 +57,7 @@
                             text: item.name
                         }))
                     },
+                    onCellValueChanged: (params) => gridazorDropdownHelper.resetDependentValue(params, 'subCatId'),
                     valueFormatter: (params) => gridazorDropdownHelper.valueFormatter(params)
                 },
                 {
@@ -65,10 +66,10 @@
                     cellEditorParams: params => {
                         return {
                             searchUrl: "Home/GetSubCategories?categoryId=" + params.data.catId,
-                            values: subCategories.map(item => ({
+                            values: subCategories.filter(item => item.catId === params.data.catId).map(item => ({
                                 value: item.id,
                                 text: item.name
-                            })) // for the first load
+                            })) // Initial values based on current selection
                         };
                     },
                     valueFormatter: (params) => gridazorDropdownHelper.valueFormatter(params)

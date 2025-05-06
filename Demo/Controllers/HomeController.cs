@@ -60,6 +60,16 @@ public class HomeController : Controller
             new(2, "Category 2")
         };
 
+        var subCats = new List<SubCategory>()
+        {
+            new(1, "Sub Cat 1-1", 1),
+            new(2, "Sub Cat 1-2", 1),
+            new(3, "Sub Cat 2-1", 2),
+            new(4, "Sub Cat 2-2", 2),
+        };
+
+        ViewBag.SubCategories = subCats;
+
         ViewBag.QualityList = Enum.GetValues<Quality>()
             .Select(x => new SelectDto((int)x, x.ToString()))
             .ToList();
@@ -102,7 +112,7 @@ public class HomeController : Controller
     }
 
     [HttpGet]
-    public IActionResult GetSubCategories(string search, List<int> categoryIds)
+    public IActionResult GetSubCategories(int categoryId, string search)
     {
         var subCats = new List<SubCategory>()
         {
@@ -112,8 +122,9 @@ public class HomeController : Controller
             new(4, "Sub Cat 2-2", 2),
         };
 
-        return Json(subCats.Where(x => string.IsNullOrEmpty(search) || x.Name.Contains(search))
-            .Where(x => categoryIds.Contains(x.CatId))
+        return Json(subCats
+            .Where(x => string.IsNullOrEmpty(search) || x.Name.Contains(search))
+            .Where(x => x.CatId == categoryId)
             .Select(x =>
                 new {
                     text = x.Name,
